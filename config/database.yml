@@ -19,6 +19,7 @@ default: &default
   encoding: unicode
   user: thiago
   passowrd: thiago
+  schema_search_path: public, postgis
   # For details on connection pooling, see Rails configuration guide
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
@@ -26,7 +27,6 @@ default: &default
 development:
   <<: *default
   database: farm_development
-  schema_search_path: public, postgis
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -84,6 +84,5 @@ development:
 production:
   <<: *default
   database: farm_production
-  schema_search_path: public, postgis
   username: postgres
   password: <%= ENV['EXEMPLO_DATABASE_PASSWORD'] %>

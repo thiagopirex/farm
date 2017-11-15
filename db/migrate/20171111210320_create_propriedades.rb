@@ -1,5 +1,6 @@
 class CreatePropriedades < ActiveRecord::Migration[5.1]
   def change
+    enable_extension "postgis"
     create_table :propriedades do |t|
       t.string :nome
       t.integer :nirf
