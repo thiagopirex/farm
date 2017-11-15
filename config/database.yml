@@ -85,4 +85,5 @@ production:
   <<: *default
   database: farm_production
   username: postgres
+  url: <%= ENV['DATABASE_URL'].sub(/^postgres/, "postgis") %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
