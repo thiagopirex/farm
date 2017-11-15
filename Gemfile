@@ -23,6 +23,9 @@ gem 'rgeo-geojson'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
+#build pack to run rails with RGeo. Deve ser adicionado no heroku
+#https://github.com/cyberdelia/heroku-geo-buildpack
+
 
 # Use Puma as the app server
 gem 'puma', '~> 3.7'

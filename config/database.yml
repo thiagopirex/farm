@@ -85,5 +85,5 @@ production:
   <<: *default
   database: farm_production
   schema_search_path: public, postgis
-  username: thiago
+  username: postgres
   password: <%= ENV['EXEMPLO_DATABASE_PASSWORD'] %>
