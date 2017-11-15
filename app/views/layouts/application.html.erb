@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Farm</title>
+    <title>Exemplo</title>
     <%= csrf_meta_tags %>
 
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
 
-  <body>
-    <%= yield %>
-  </body>
+	<body>
+	<%= render 'home/navigation.html.erb' %>
+		<div class='container'>
+			<%= yield %>
+		</div>
+	<%= render 'home/footer.html.erb' %>
+	</body>
 </html>

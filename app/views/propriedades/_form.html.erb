@@ -1,0 +1,27 @@
+<%= form_with(model: propriedade, local: true) do |form| %>
+  <% if propriedade.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(propriedade.errors.count, "error") %> prohibited this propriedade from being saved:</h2>
+
+      <ul>
+      <% propriedade.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :nome %>
+    <%= form.text_field :nome, id: :propriedade_nome %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sede %>
+    <%= form.text_field :sede, id: :propriedade_sede %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

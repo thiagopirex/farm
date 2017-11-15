@@ -1,8 +1,13 @@
+<% if @propriedades.count == 0 %>
+
 <div class="alert alert-info" role="alert">
 	<strong><%= t('Alerta') =%></strong>:
 	<%= t('Sem proprierties ainda!') %>
 </div>
-Clique aqui para começar!
-
+<%= link_to 'Clique aqui', new_propriedade_path %> para começar!
+<% else %>
+Total de propriedades registradas: <%= @propriedades.count%>
+</br>
+<% end%>
 
 

@@ -10,6 +10,20 @@ end
 gem 'rails', '~> 5.1.4'
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 0.18'
+
+# postgis
+gem 'activerecord-postgis-adapter'
+gem 'ffi-geos'
+
+#add rgeo to test deploy
+gem 'rgeo'
+gem 'rgeo-activerecord'
+gem 'rgeo-geojson'
+
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
+
+
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
 # Use SCSS for stylesheets

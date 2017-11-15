@@ -15,9 +15,11 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Propriedades<span class="caret"></span></a>
           <ul class="dropdown-menu">
-          	
+          	<% @propriedades.each do |p| %>
+          		<li><%= link_to p.nome, p%></li>
+          	<% end %>
             <li role="separator" class="divider"></li>
-        
+            <li><%= link_to 'Nova Propriedade', new_propriedade_path %></li>
             <li role="separator" class="divider"></li>
             <li><a href="#">One more separated link</a></li>
           </ul>
@@ -26,7 +28,9 @@
       <ul class="nav navbar-nav navbar-right">
       	<form class="navbar-form navbar-left">
 	        <div class="form-group" style="color: white; margin-top: 8px; font-size: 18px;">
-
+	          <%= if !@propriedade.nil? && !@propriedade.id.nil?
+	          	 link_to @propriedade.nome, @propriedade, class:"btn btn-warning btn-md"
+	          	end %>
 	        </div>
 	      </form>
       </ul>
