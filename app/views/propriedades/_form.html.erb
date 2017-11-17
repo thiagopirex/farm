@@ -1,27 +1,139 @@
-<%= form_with(model: propriedade, local: true) do |form| %>
-  <% if propriedade.errors.any? %>
+<%= form_for(@propriedade) do |f| %>
+  <% if @propriedade.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(propriedade.errors.count, "error") %> prohibited this propriedade from being saved:</h2>
+      <h2><%= pluralize(@propriedade.errors.count, "erro(s)") %> impede de criar esta propriedade:</h2>
 
       <ul>
-      <% propriedade.errors.full_messages.each do |message| %>
+      <% @propriedade.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
+  <%= hidden_field_tag(:sede_ponto, 'valor') %>
   <div class="field">
-    <%= form.label :nome %>
-    <%= form.text_field :nome, id: :propriedade_nome %>
+    <%= f.label :Nome %>
+    <%= f.text_field :nome %>
+  
+    <%= f.label :NIRF %>
+    <%= f.text_field :nirf %>
+    <div class="pull-right">
+    	<% if @propriedade.id.nil?%>
+			<%= link_to 'Voltar', propriedades_path, class:"btn btn-default btn-md" %>
+		<% else %>
+			<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
+		<% end %>
+		<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
+	</div>
   </div>
+    
+  
+  <div id="map"></div>
+  
+  <script>
+  	var map;
+  	
+  	var geometriaSede = '<%= @sede_ponto %>';
+  	
+	var mapOptions = getMapOptions(geometriaSede);
+  	
+	map = L.map('map', mapOptions);
+	
+	addLatLng(map);
+	
+    L.control.layers(baseMaps).addTo(map);
+	
+	// Initialise the FeatureGroup to store editable layers
+	var drawnItems = new L.FeatureGroup();
+	
+	var editar = false;
+	
+	 
+     if (geometriaSede != "") {
+		geometriaSede = replaceAll(geometriaSede, "&quot;", "\"");
+		
+		var features = JSON.parse(geometriaSede);
+		var geoJson = L.geoJson(features, {
+			onEachFeature: function (feature, layer) {
+				layer.setIcon(sedeIcon);
+				layer.addTo(drawnItems);
+		   }
+		});
+		
 
-  <div class="field">
-    <%= form.label :sede %>
-    <%= form.text_field :sede, id: :propriedade_sede %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+		editar = true;
+	}
+	
+	
+	// Initialise the draw control and pass it the FeatureGroup of editable layers
+	var drawControlFull = new L.Control.Draw({
+		draw: {
+			polyline: false,
+			marker: {icon: sedeIcon},
+			circle: false,
+			rectangle: false,
+			polygon: false
+		},
+  		edit: {
+    		featureGroup: drawnItems
+  		}
+	});
+	
+	var drawControlEditOnly = new L.Control.Draw({
+    	edit: {
+        	featureGroup: drawnItems
+    	},
+    	draw: false
+	});
+	
+	map.addLayer(drawnItems);
+	
+	if (editar) {
+		map.removeControl(drawControlFull);
+        map.addControl(drawControlEditOnly);
+	} else {
+		map.addControl(drawControlFull);
+	}
+	
+	map.on(L.Draw.Event.EDITED, editGeometry);
+	
+	function editGeometry(e) {
+		drawnItems.eachLayer(function (layer) {
+			capturarGeometria(layer);
+		});
+	}
+	
+	map.on(L.Draw.Event.CREATED, function (e) {
+  		var layer = e.layer;
+	  	layer.addTo(drawnItems);
+		   	
+		capturarGeometria(layer);
+    	
+    	map.removeControl(drawControlFull);
+        map.addControl(drawControlEditOnly);
+	});
+	
+	
+	map.on(L.Draw.Event.DELETED, function(e) {
+    	var type = e.layerType;
+        var layer = e.layer;
+		var check =  Object.keys(drawnItems._layers).length;
+	    if (check === 0){
+	        map.removeControl(drawControlEditOnly);
+	        map.addControl(drawControlFull);
+	    };
+	    document.getElementById('sede_ponto').value = "";
+	});
+	
+	function capturarGeometria(layer) {
+		// here you can get it in geojson format
+        var geojson = layer.toGeoJSON();
+        var json = JSON.stringify(geojson);
+        
+        document.getElementById('sede_ponto').value = json;
+	}
+	
+</script>
+  
 <% end %>

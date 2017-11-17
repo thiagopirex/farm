@@ -1,14 +1,133 @@
-<p id="notice"><%= notice %></p>
+<div class="container">
+	<p id="notice"><%= notice %></p>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-8" id="map"></div>
+            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
+            <div class="col-md-4 open" id="sidebar">
+				
+				<div class="field">
+					<strong style="margin-left: 10px;">Propriedade:</strong>
+  					<%= @propriedade.nome %> (<span id="areaTotal" title="Calculado a partir das áreas informadas!"></span>)
+		  			</br></br>
+		  			<strong style="margin-left: 10px;">NIRF:</strong> ????
+		  			</br></br>
+		  			<strong style="margin-left: 10px;">Quantidade de Animais: </strong><%=@propriedade.getQntAnimais %>
+		  			</br></br></br>
+		  			<% if @propriedade.areas.count == 0 %>
+		  				</br>
+		  				<strong style="margin-left: 10px;">Nenhuma área informada ainda!</strong>
+		  			<% end %>
+		  			</br></br></br></br></br>
+		  			<%= link_to 'Editar', edit_propriedade_path(@propriedade), 
+		  				class: "btn btn-primary btn-md botao" %> 
+		  			<%= link_to 'Excluir', @propriedade, method: :delete, data: { confirm: 'Tem certeza que deseja excluir os dados desta propriedade?' }, 
+		  				class: "btn btn-danger btn-md botao" %>
+		  			<%= link_to 'Voltar', propriedades_path, class: "btn btn-default btn-md botao" %>
+		  			</br>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Área</span>').html_safe, new_area_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Ponto de Água</span>').html_safe, new_agua_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+  
+  <script>
+  var map;
+  $('#collapse').click(function(){
+	if($('#sidebar').hasClass('open')) {
+		$('#sidebar').removeClass('col-md-4');
+		$('#sidebar').removeClass('open');
+		$('#sidebar').addClass('hidden');
+		$('#map').addClass('col-md-12');
+		$('#map').removeClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-left.png");
+		map.remove();
+    	drawMap();
+	} else {
+	    $('#sidebar').addClass('col-md-4');
+		$('#sidebar').addClass('open');
+		$('#sidebar').removeClass('hidden');
+		$('#map').removeClass('col-md-12');
+		$('#map').addClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-right.png");
+	}
+	});
 
-<p>
-  <strong>Nome:</strong>
-  <%= @propriedade.nome %>
-</p>
-
-<p>
-  <strong>Sede:</strong>
-  <%= @propriedade.sede %>
-</p>
-
-<%= link_to 'Edit', edit_propriedade_path(@propriedade) %> |
-<%= link_to 'Back', propriedades_path %>
+drawMap();
+  
+function drawMap() {
+	//carrega layer pontos de água
+	var layerPontosAgua = L.layerGroup();
+    <% @propriedade.aguas.each do |a| %>
+	   	stringGeometria = '<%= a.getGeoJsonFromRGeoPoint %>';
+	   	id = <%= a.id %>;
+	   	tipo = "<%= raw (a.foto_tipo) %>";
+	   	img = "";
+	   	if (tipo) {
+	   		base64 = "<%=  a.getContentImgBase64 %>";
+		   	img = "<img style=\'width: 200px; height: 150px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+	   	}
+	   	link = "<a href='/aguas/" + id + "/edit'>Editar</a>";
+	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/aguas/" + id + "'>Excluir</a>"
+	   	addLayerPontoAgua(stringGeometria, img, link, layerPontosAgua);
+    <% end %>
+    
+    //carrega layer sede
+    var stringGeometriaSede = '<%= @sede_ponto %>';
+    var layerSede = L.layerGroup();
+    if (stringGeometriaSede != "") {
+		var stringGeometriaSede = replaceAll(stringGeometriaSede, "&quot;", "\"");
+		var featuresSede = JSON.parse(stringGeometriaSede);
+		var geoJson = L.geoJson(featuresSede, {
+			onEachFeature: function (feature, layer) {
+				layer.bindPopup('Sede da propriedade');
+				layer.setIcon(sedeIcon);
+				layer.addTo(layerSede);
+		   }
+		});
+		editar = true;
+	}
+	
+	//layers opcionais
+	var overlays = {
+		"Sede": layerSede,
+    	"Pontos de Água": layerPontosAgua
+    }
+    
+    var layersDefault = [layerSede, layerPontosAgua, google];
+    
+    
+    //Criação do mapa  	
+  	var mapOptions = getMapOptionsWithLayers(stringGeometriaSede, layersDefault);
+  	
+	map = L.map('map', mapOptions);
+	
+	var measureControl = L.control.measure(measureOptions);
+	measureControl.addTo(map);
+	
+	
+	//Adiciona os controles ao mapa
+    L.control.layers(baseMaps, overlays).addTo(map);
+    
+    
+    var stringGeometria;
+    var link;
+    var id;
+    var areaTotal = 0;
+    <% @propriedade.areas.each do |a| %>
+	   	stringGeometria = '<%= a.getGeoJsonFromRGeo %>';
+	   	id = <%= a.id %>;
+	   	link = "</br><a href='/areas/" + id + "'>Detalhar</a>";
+	   	link = link + " | <a href='/areas/" + id + "/edit'>Editar</a>";
+	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/areas/" + id + "'>Excluir</a>"
+	   	adicionarPoligonoArea(stringGeometria, map, link);
+	   	areaTotal = areaTotal +  getAreaPoligonoHectare(stringGeometria);
+    <% end %>
+    
+    document.getElementById('areaTotal').innerHTML = areaTotal.toFixed(2) + ' hectares';
+}
+</script>
