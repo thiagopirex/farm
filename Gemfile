@@ -26,6 +26,10 @@ gem 'jquery-rails'
 #build pack to run rails with RGeo. Deve ser adicionado no heroku
 #https://github.com/cyberdelia/heroku-geo-buildpack
 
+#resolve assets
+#rake assets:precompile
+#commit public/assets dir
+
 
 # Use Puma as the app server
 gem 'puma', '~> 3.7'

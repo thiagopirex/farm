@@ -12,14 +12,14 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 #Rails.application.config.assets.precompile += %w( bootstrap.min.js bootstrap.min.css )
-Rails.application.config.assets.precompile += %w( bootstrap.min.css )
+Rails.application.config.assets.precompile += %w( bootstrap.css )
 Rails.application.config.assets.precompile += %w( bootstrap-datepicker.css )
 Rails.application.config.assets.precompile += %w( leaflet.css )
 Rails.application.config.assets.precompile += %w( leaflet.draw.css )
 Rails.application.config.assets.precompile += %w( leaflet-measure.css )
 Rails.application.config.assets.precompile += %w( Leaflet.Coordinates-0.1.5.css )
 
-Rails.application.config.assets.precompile += %w( bootstrap.min.js )
+Rails.application.config.assets.precompile += %w( bootstrap.js )
 Rails.application.config.assets.precompile += %w( bootstrap-datepicker.js )
 Rails.application.config.assets.precompile += %w( bootstrap-datepicker.pt-BR.js )
 Rails.application.config.assets.precompile += %w( leaflet.js )

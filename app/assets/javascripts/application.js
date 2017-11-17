@@ -13,7 +13,7 @@
 //= require turbolinks
 //= require jquery
 //= require jquery_ujs
-//= require bootstrap.min
+//= require bootstrap
 //= require bootstrap-datepicker
 //= require bootstrap-datepicker.pt-BR
 //= require leaflet

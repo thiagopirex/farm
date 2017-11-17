@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Farm Management</title>
-    <%= csrf_meta_tags %>
-
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
-
-	<body>
-	<%= render 'home/navigation.html.erb' %>
-		<div class='container'>
-			<%= yield %>
-		</div>
-	<%= render 'home/footer.html.erb' %>
-	</body>
+<head>
+  <title>Farm Managment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag 'bootstrap.css' %>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+  <%= stylesheet_link_tag 'leaflet.css' %>
+  <%= stylesheet_link_tag 'leaflet.draw.css' %>
+  <%= stylesheet_link_tag 'leaflet-measure.css' %>
+  <%= stylesheet_link_tag 'Leaflet.Coordinates-0.1.5.css' %>
+  
+  
+  <%= javascript_include_tag('leaflet.js') %>
+  <%= javascript_include_tag('leaflet-geodesy.js') %>
+  <%= javascript_include_tag('leaflet-measure.js') %>
+  <%= javascript_include_tag('leaflet.draw.js') %>
+  <%= javascript_include_tag('Leaflet.Coordinates-0.1.5.min.js') %>
+  
+  
+  <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
+  
+  
+  <!--<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.2/dist/leaflet.css" />-->
+  <!--<link rel="stylesheet" href="https://unpkg.com/leaflet-draw@0.4.9/dist/leaflet.draw.css" />-->
+    <!--<script src="https://unpkg.com/leaflet@1.0.2/dist/leaflet.js"></script>-->
+    <!--<script src="https://unpkg.com/leaflet-draw@0.4.9/dist/leaflet.draw.js"></script>-->
+</head>
+<body>
+<%= render 'home/navigation.html.erb' %>
+<div class='container'>
+<%= yield %>
+</div>
+<%= render 'home/footer.html.erb' %>
+</body>
 </html>

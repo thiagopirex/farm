@@ -1,0 +1,78 @@
+<p id="notice"><%= notice %></p>
+
+
+<% if @propriedade.nil? %>
+<h3>Todas as Áreas</h3>
+<% else %>
+<h3>Áreas (<%=@propriedade.nome %>)
+<%= link_to ('<span class="glyphicon glyphicon-plus"></span>').html_safe, new_area_path(:propriedade_id => @propriedade.id) , class:"btn btn-success btn-md" %>
+<div class="pull-right">
+	<%= link_to 'Voltar', @propriedade , class:"btn btn-default btn-md"%>
+</div> 
+</h3>
+<% end %>
+<div class="panel panel-default">
+	<div id="map" ></div>
+    <!-- <div class="panel-heading">
+         <div class="panel-title pull-left" style="width: 800px;">
+             
+         </div>
+        <div class="panel-title pull-right" style="width: 300px;">
+        	<table class="table">
+			  <thead class="thead-default">
+			    <tr>
+			      <% if @propriedade.nil? %>
+			    	<th>Propriedade</th>
+			      <% end %>
+			      <th>Área</th>
+			      <th>Situação</th>
+			    </tr>
+			  </thead>
+			
+			  <tbody>
+			    <% @areas.each do |area| %>
+			      <tr id="area_id_<%= area.id %>">
+			      	<% if @propriedade.nil? %>
+			      		<% if area.propriedade.nil? %>
+			      			<td></td>
+			      		<% else %>  
+			    	  		<td><%= link_to area.propriedade.nome, area.propriedade %></td>
+			    	  	<% end%>	
+			        <% end %>
+			        <td><%= link_to area.nome, area, title: 'Clique aqui para ver mais detalhes' %></td>
+			        <td><%= area.situacao %></td>
+			      </tr>
+			    <% end %>
+			  </tbody>
+			</table>
+        </div>
+        <div class="clearfix"></div>
+    </div> -->
+</div>
+
+
+<script>
+  	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
+  	
+  	var mapOptions = getMapOptions(geometriaSede);
+  	
+	var map = L.map('map', mapOptions);
+	
+    L.control.layers(baseMaps).addTo(map);
+    
+    var measureControl = L.control.measure(measureOptions);
+	measureControl.addTo(map);
+   
+    var stringGeometria;
+    var link;
+    var id;
+    <% @areas.each do |a| %>
+	   	stringGeometria = '<%= a.getGeoJsonFromRGeo %>';
+	   	id = <%= a.id %>;
+	   	link = "</br><a href='/areas/" + id + "'>Detalhar</a>";
+	   	link = link + " | <a href='/areas/" + id + "/edit'>Editar</a>";
+	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/areas/" + id + "'>Excluir</a>"
+	   	adicionarPoligonoArea(stringGeometria, map, link);
+    <% end %>
+</script>
+

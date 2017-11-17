@@ -27,12 +27,10 @@
 		<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
 	</div>
   </div>
-    
   
   <div id="map"></div>
-  
   <script>
-  	var map;
+  var map;
   	
   	var geometriaSede = '<%= @sede_ponto %>';
   	
@@ -42,15 +40,14 @@
 	
 	addLatLng(map);
 	
-    L.control.layers(baseMaps).addTo(map);
+	L.control.layers(baseMaps).addTo(map);
 	
 	// Initialise the FeatureGroup to store editable layers
 	var drawnItems = new L.FeatureGroup();
 	
 	var editar = false;
 	
-	 
-     if (geometriaSede != "") {
+	if (geometriaSede != "") {
 		geometriaSede = replaceAll(geometriaSede, "&quot;", "\"");
 		
 		var features = JSON.parse(geometriaSede);
@@ -133,7 +130,5 @@
         
         document.getElementById('sede_ponto').value = json;
 	}
-	
-</script>
-  
+  </script>
 <% end %>

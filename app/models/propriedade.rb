@@ -1,6 +1,6 @@
 class Propriedade < ApplicationRecord
-  #has_many :areas
-  #has_many :aguas
+  has_many :areas
+  has_many :aguas
   validates_presence_of :nome, :message => " - Este campo deve ser preenchido!"
   
   def getGeoJsonFromRGeoPoint
@@ -20,10 +20,10 @@ class Propriedade < ApplicationRecord
   
   def getQntAnimais
     qnt = 0;
-    #self.areas.each do |a|
+    self.areas.each do |a|
       #TODO pegar valor da soma da última locação
-    #  qnt= qnt + 1;
-    #end
+      qnt= qnt + 1;
+    end
     qnt;
   end
 end

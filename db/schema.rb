@@ -10,11 +10,32 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111210320) do
+ActiveRecord::Schema.define(version: 20171117020537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "aguas", force: :cascade do |t|
+    t.string "tipo"
+    t.binary "foto_conteudo"
+    t.string "foto_tipo"
+    t.geometry "localizacao", limit: {:srid=>3857, :type=>"st_point"}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "propriedade_id"
+    t.index ["propriedade_id"], name: "index_aguas_on_propriedade_id"
+  end
+
+  create_table "areas", force: :cascade do |t|
+    t.string "nome"
+    t.string "situacao"
+    t.geometry "limites", limit: {:srid=>3857, :type=>"st_polygon"}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "propriedade_id"
+    t.index ["propriedade_id"], name: "index_areas_on_propriedade_id"
+  end
 
   create_table "propriedades", force: :cascade do |t|
     t.string "nome"
@@ -24,4 +45,5 @@ ActiveRecord::Schema.define(version: 20171111210320) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "areas", "propriedades"
 end

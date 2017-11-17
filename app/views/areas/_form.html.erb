@@ -1,0 +1,207 @@
+<%= form_for(@area) do |f| %>
+  <% if @area.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+      <% @area.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  
+  <%= f.hidden_field :propriedade_id, :value => @propriedade.id %>
+  <%= hidden_field_tag(:poligono, 'valor') %>
+  	
+  <div class="container">
+    <div class="row">
+        <div class="row">
+            <div class="col-md-8" id="map"></div>
+            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
+            <div class="col-md-4 open" id="sidebar">
+				
+				<div class="field">
+					<%= f.label :nome %>: 
+				    <%= f.text_field :nome %>
+				    </br>
+				    <%= f.label :condição %>:
+					<%= f.text_field :situacao %>
+					</br>
+				    <%= f.label :pastagem_atual %>:
+					<%= f.text_field :pastagem_atual %>
+					<% if !@area.foto_conteudo.nil? %>
+		      			<%= getImgBase64(@area) %>
+					    </br>
+					    </br>
+		      		<% end %>
+		      		<%= f.file_field :file%>
+					</br>
+					</br>
+					<div class="pull-left">
+						<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
+						<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
+						 <% if !@area.foto_conteudo.nil? %> 
+							<%= link_to "Download", area_path(:id => @area.id, :download => true), class:"btn btn-default btn-md", method: :get %>
+					    <% end %>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+  
+  <script>
+  var map;
+  $('#collapse').click(function(){
+	if($('#sidebar').hasClass('open')) {
+		$('#sidebar').removeClass('col-md-4');
+		$('#sidebar').removeClass('open');
+		$('#sidebar').addClass('hidden');
+		$('#map').addClass('col-md-12');
+		$('#map').removeClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-left.png");
+		map.remove();
+    	drawMap();
+	} else {
+	    $('#sidebar').addClass('col-md-4');
+		$('#sidebar').addClass('open');
+		$('#sidebar').removeClass('hidden');
+		$('#map').removeClass('col-md-12');
+		$('#map').addClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-right.png");
+	}
+	});
+
+drawMap();
+  
+function drawMap() {
+  	
+	
+	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
+
+	var mapOptions = getMapOptions(geometriaSede);
+  	
+	map = L.map('map', mapOptions);
+	
+	var measureControl = L.control.measure(measureOptions);
+	measureControl.addTo(map);
+	
+    L.control.layers(baseMaps).addTo(map);
+	
+	// Initialise the FeatureGroup to store editable layers
+	var drawnItems = new L.FeatureGroup();
+	
+	var editar = false;
+	
+	var stringGeometria = '<%= @poligono %>';
+    if (stringGeometria != "") {
+		stringGeometria = replaceAll(stringGeometria, "&quot;", "\"");
+		
+		var features = JSON.parse(stringGeometria);
+		var geoJson = L.geoJson(features, {
+			onEachFeature: function (feature, layer) {
+				layer.setStyle({color: 'yellow'});
+				layer.addTo(drawnItems);
+				capturarGeometria(layer);
+		   }
+		});
+		
+
+		editar = true;
+	}
+	
+	// Initialise the draw control and pass it the FeatureGroup of editable layers
+	var drawControlFull = new L.Control.Draw({
+		draw: {
+			polyline: false,
+			marker: false,
+			circle: false,
+			rectangle: false,
+			polygon: {
+				showArea: true,
+				shapeOptions: {
+					color: '#bada55'
+				}
+			}
+		},
+  		edit: {
+    		featureGroup: drawnItems
+  		}
+	});
+	
+	var drawControlEditOnly = new L.Control.Draw({
+    	edit: {
+        	featureGroup: drawnItems
+    	},
+    	draw: false
+	});
+	
+	map.addLayer(drawnItems);
+	
+	if (editar) {
+		map.removeControl(drawControlFull);
+        map.addControl(drawControlEditOnly);
+	} else {
+		map.addControl(drawControlFull);
+	}
+	
+	map.on(L.Draw.Event.EDITED, editGeometry);
+	
+	
+	addLatLng(map);
+	
+	map.on(L.Draw.Event.CREATED, function (e) {
+  		var layer = e.layer;
+	  	layer.addTo(drawnItems);
+		var area = "Área: " + (toHectare(LGeo.area(layer))).toFixed(2) + " hectares"; 
+		layer.bindPopup(area);
+    	
+		capturarGeometria(layer);
+    	
+    	console.log("area: " + L.GeometryUtil.geodesicArea(layer.getLatLngs()));
+    	
+    	map.removeControl(drawControlFull);
+        map.addControl(drawControlEditOnly);
+	});
+	
+	
+	map.on(L.Draw.Event.DELETED, function(e) {
+    	var type = e.layerType;
+        var layer = e.layer;
+		var check =  Object.keys(drawnItems._layers).length;
+	    if (check === 0){
+	        map.removeControl(drawControlEditOnly);
+	        map.addControl(drawControlFull);
+	    };
+	    document.getElementById('poligono').value = "";
+	});
+	
+	var stringGeometria;
+    var link;
+    var id;
+    <% @areas.each do |a| %> 
+    	<% if a.id != @area.id %>
+		   	stringGeometria = '<%= a.getGeoJsonFromRGeo %>';
+		   	id = <%= a.id %>;
+		   	link = "</br><a href='/areas/" + id + "'>Detalhar</a>";
+		   	link = link + " | <a href='/areas/" + id + "/edit'>Editar</a>";
+		   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/areas/" + id + "'>Excluir</a>"
+		   	adicionarPoligonoArea(stringGeometria, map, link);
+    	<% end %>
+     
+    <% end %>
+}
+function capturarGeometria(layer) {
+	// here you can get it in geojson format
+    var geojson = layer.toGeoJSON();
+    var json = JSON.stringify(geojson);
+    
+    document.getElementById('poligono').value = json;
+}
+
+function editGeometry(e) {
+	drawnItems.eachLayer(function (layer) {
+		capturarGeometria(layer);
+	});
+}
+</script>
+<% end %>

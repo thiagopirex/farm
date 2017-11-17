@@ -1,0 +1,257 @@
+<div class="container">
+	<p id="notice"><%= notice %></p>
+	<% if @area.errors.any? %>
+    <div id="error_explanation">
+      <ul>
+      <% @area.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-8" id="map"></div>
+            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
+            <div class="col-md-4 open" id="sidebar">
+				<strong style="margin-left: 10px;">Nome:</strong>
+	        	<%= @area.nome %>
+	        	</br>
+	        	<strong style="margin-left: 10px;">Situação:</strong>
+	        	<%= @area.situacao %>
+	        	</br></br></br></br>
+				<div class="actions">
+				    <%= link_to 'Editar', edit_area_path(@area), 
+	  				class: "btn btn-info btn-md botao" %> 
+					<%= link_to 'Excluir', @area, method: :delete, data: { confirm: 'Tem certeza que deseja excluir os dados desta área' }, 
+	  				class: "btn btn-danger btn-md botao" %>
+					<%= link_to 'Voltar', @area.propriedade, class: "btn btn-default btn-md botao" %>
+					
+					</br></br>
+					<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#analiseModal">Análises</button>
+					<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#usoModal">Utilização</button>
+					<button type="button" class="btn btn-info btn-md" data-toggle="modal" data-target="#acaoModal">Execuções</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	<!--modais -->
+	<div class="modal fade" id="analiseModal" role="dialog">
+    	<div class="modal-dialog">
+    
+      	<!-- Modal content-- ANALISE-->
+      	<div class="modal-content">
+        	<div class="modal-header">
+          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+          		<h4 class="modal-title">Análises da área <%=@area.nome%></h4>
+        	</div>
+        	<div class="modal-body">
+          		<table class="table">
+		  			<thead>
+						<tr>
+					    	<th>Data</th>
+					      	<th>Arquivo</th>
+					      	<th>Ação</th>
+					    </tr>
+				  	</thead>
+		  			<tbody>
+					    <% @analises.each do |analise| %>
+					      <tr>
+					      	<td><%= formatDate(:data => analise.data) %></td>
+					        <td><%= link_to analise.arquivo_nome, analise, method: :get %></td>
+					        <td><%= link_to 'Excluir', analise, method: :delete, 
+					        data: { confirm: 'Tem certeza que deseja excluir esta análise?' }, class: "btn btn-danger btn-sm" %></td>
+					        
+					      </tr>
+					    <% end %>
+				  	</tbody>
+				</table>
+        	</div>
+        	<div class="modal-footer">
+        		<%= link_to 'Nova', new_analise_path(:area_id => @area.id) , class:"btn btn-success btn-md" %>
+          		<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        	</div>
+      	</div>
+    </div>
+  </div>
+  <div class="modal fade" id="usoModal" role="dialog">
+    	<div class="modal-dialog modal-lg">
+    
+      	<!-- Modal content--Utilização-->
+      	<div class="modal-content">
+        	<div class="modal-header">
+          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+          		<h4 class="modal-title">Utilização da área <%=@area.nome%></h4>
+        	</div>
+        	<div class="modal-body">
+          		<table class="table">
+		  			<thead>
+						<tr>
+					    	<th style="text-align: center">Data de</br>Início</th>
+					    	<th style="text-align: center">Data de</br>Término</th>
+					    	<th style="text-align: center">Dias</br>Corridos</th>
+					    	<th style="text-align: center">Quantidade</br>de Animais</th>
+					      	<th style="text-align: center">Idade média</br>(meses)</th>
+					      	<th style="text-align: center" colspan="2">Ação</th>
+					    </tr>
+				  	</thead>
+		  			<tbody>
+		  				<% if @usos.any? %>
+						    <% @usos.each do |uso| %>
+						      <tr>
+						      	<td style="text-align: center">
+						      		<% if uso.dt_inicio.nil? %>
+						      		   null
+						      		<% else %>
+						      			<%= formatDate(:data => uso.dt_inicio) %>
+						      		<% end %>     
+						      	</td>
+						      	<td style="text-align: center">
+						      		<% if !uso.dt_fim.nil? %>
+						      			<%= formatDate(:data => uso.dt_fim) %>
+						      		<% end %>     
+						      	</td>
+						      	<td style="text-align: center"><%= calculaDiasCorridos(:inicio => uso.dt_inicio, :fim => uso.dt_fim)%></td>
+						        <td style="text-align: center"><%= uso.qnt_animais %></td>
+						        <td style="text-align: center"><%= uso.idade_animais %></td>
+						        <td style="text-align: center"><%= link_to 'Editar', edit_uso_path(uso), method: :get,
+						         class:"btn btn-info btn-sm" %></td>
+						        <td style="text-align: center"><%= link_to 'Excluir', uso, method: :delete, 
+						         data: { confirm: 'Tem certeza que deseja excluir esta utilização?' },  class:"btn btn-danger btn-sm" %></td>
+						        
+						      </tr>
+						    <% end %>
+						 
+						 
+						 <% else %>
+						 	<tr>
+						 		<td colspan="6"><center>Nenhum registro encontrado</center></td>
+						 	</tr>
+						 <% end %>
+				  	</tbody>
+				</table>
+        	</div>
+        	<div class="modal-footer">
+        		<%
+        		emUso = false
+        		@usos.each do |u|
+        			if u.dt_fim.nil?
+          				emUso = true
+        			end
+      			end
+      			
+      			if emUso %>
+      				<button type="button" class="btn btn-success btn-sm disabled" 
+      				  title="Finalize a utilização em andamento para adicionar uma nova!">Nova</button>
+      			<% else %>
+      				<%= link_to 'Nova', new_uso_path(:area_id => @area.id) , class:"btn btn-success btn-md" %>
+      			<%
+      			end
+        		%>
+        		
+          		<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        	</div>
+      	</div>
+    </div>
+  </div>idade_animais
+  
+  <div class="modal fade" id="acaoModal" role="dialog">
+    	<div class="modal-dialog modal-lg">
+    
+      	<!-- Modal content--Ação-->
+      	<div class="modal-content">
+        	<div class="modal-header">
+          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+          		<h4 class="modal-title">Execuções na área <%=@area.nome%></h4>
+        	</div>
+        	<div class="modal-body">
+          		<table class="table">
+		  			<thead>
+						<tr>
+					    	<th style="text-align: center">Data</th>
+					    	<th style="text-align: center">Execução</th>
+					    	<th style="text-align: center">Valor</th>
+					      	<th style="text-align: center" colspan="2">Ação</th>
+					    </tr>
+				  	</thead>
+		  			<tbody>
+		  				<% if @acaos.any? %>
+						    <% @acaos.each do |a| %>
+						      <tr>
+						      	<td style="text-align: center">
+						      		<% if a.dt_acao.nil? %>
+						      		   null
+						      		<% else %>
+						      			<%= formatDate(:data => a.dt_acao) %>
+						      		<% end %>     
+						      	</td>
+						        <td style="text-align: center" title="<%= a.ds_observacao%>"><%= a.nm_acao %></td>
+						        <td style="text-align: center"><%= a.vl_acao %></td>
+						        <td style="text-align: center"><%= link_to 'Editar', edit_acao_path(a), method: :get,
+						         class:"btn btn-info btn-sm" %></td>
+						        <td style="text-align: center"><%= link_to 'Excluir', a, method: :delete, 
+						         data: { confirm: 'Tem certeza que deseja excluir esta execução?' },  class:"btn btn-danger btn-sm" %></td>
+						        
+						      </tr>
+						    <% end %>
+						 
+						 
+						 <% else %>
+						 	<tr>
+						 		<td colspan="5"><center>Nenhum registro encontrado</center></td>
+						 	</tr>
+						 <% end %>
+				  	</tbody>
+				</table>
+        	</div>
+        	<div class="modal-footer">
+      			<%= link_to 'Nova', new_acao_path(:area_id => @area.id) , class:"btn btn-success btn-md" %>
+          		<button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        	</div>
+      	</div>
+    </div>
+  </div>
+  <!-- fim modais-->
+</div>
+<script>
+  	var map;
+  $('#collapse').click(function(){
+	if($('#sidebar').hasClass('open')) {
+		$('#sidebar').removeClass('col-md-4');
+		$('#sidebar').removeClass('open');
+		$('#sidebar').addClass('hidden');
+		$('#map').addClass('col-md-12');
+		$('#map').removeClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-left.png");
+	} else {
+	    $('#sidebar').addClass('col-md-4');
+		$('#sidebar').addClass('open');
+		$('#sidebar').removeClass('hidden');
+		$('#map').removeClass('col-md-12');
+		$('#map').addClass('col-md-8');
+		$("#collapse").attr("src", "/images/collapse-right.png");
+	}
+    map.remove();
+    drawMap();
+	});
+
+function drawMap() {
+  	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
+  	
+  	var mapOptions = getMapOptions(geometriaSede);
+  	
+	map = L.map('map', mapOptions);
+	
+	var measureControl = L.control.measure(measureOptions);
+	measureControl.addTo(map);
+  	
+    L.control.layers(baseMaps).addTo(map);
+   
+    var stringGeometria = '<%= @poligono %>';
+    adicionarPoligonoArea(stringGeometria, map);
+}
+drawMap();
+</script>
+</div>
