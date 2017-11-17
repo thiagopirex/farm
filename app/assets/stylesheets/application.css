@@ -12,6 +12,8 @@
  *
  *= require bootstrap.min
  *= require_self
+ *= require bootstrap-datepicker
+ *= require Leaflet.Coordinates-0.1.5
  *= require_tree .
  */
 .navbar {
@@ -25,3 +27,4 @@
 .label {
 	margin: 10px;
 }
+
