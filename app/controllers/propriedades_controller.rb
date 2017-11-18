@@ -43,9 +43,9 @@ class PropriedadesController < ApplicationController
   def update
     
     respond_to do |format|
-      atributos = propriedade_params.clone
-      atributos[:sede] = getRGeoFromGeoJson
-      if @propriedade.update_attributes(atributos)
+      @atributos = propriedade_params.clone
+      updateLocalizacao
+      if @propriedade.update_attributes(@atributos)
         format.html { redirect_to @propriedade, notice: 'Propriedade atualizada com sucesso!' }
         format.json { render :show, status: :ok, location: @propriedade }
       else
@@ -75,6 +75,13 @@ class PropriedadesController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def propriedade_params
       params.require(:propriedade).permit(:nome, :nirf, :sede)
+    end
+    
+    def updateLocalizacao
+      valor = getRGeoFromGeoJson
+      if !valor.nil?
+        @atributos[:sede] = valor
+      end
     end
     
     def getRGeoFromGeoJson
