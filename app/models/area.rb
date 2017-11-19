@@ -2,7 +2,7 @@ class Area < ActiveRecord::Base
   
   
   belongs_to :propriedade
-  #has_many :analises
+  has_many :analises
   #has_many :usos, ->{order('dt_fim asc')}
   #has_many :acaos, ->{order('dt_acao desc')}
   

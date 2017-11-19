@@ -2,7 +2,7 @@ Rails.application.routes.draw do
 
   resources :propriedades
   resources :areas
-  #resources :analises
+  resources :analises
   resources :aguas
   #resources :usos
   #resources :acaos
