@@ -25,6 +25,7 @@ gem 'jquery-rails'
 
 #build pack to run rails with RGeo. Deve ser adicionado no heroku
 #https://github.com/cyberdelia/heroku-geo-buildpack
+#release/tag 1.3 (13/10/2014)
 
 #resolve assets
 #rake assets:precompile
