@@ -1,10 +1,8 @@
 class Area < ActiveRecord::Base
-  
-  
   belongs_to :propriedade
   has_many :analises
-  #has_many :usos, ->{order('dt_fim asc')}
-  #has_many :acaos, ->{order('dt_acao desc')}
+  has_many :usos, ->{order('dt_fim asc')}
+  has_many :acaos, ->{order('dt_acao desc')}
   
   before_destroy :verificar_dependencias
   
@@ -12,12 +10,12 @@ class Area < ActiveRecord::Base
   
   
   def verificar_dependencias
-    #if self.usos.any? or self.analises.any? or self.acaos.any?
-    #  errors.add(:base, " Esta área não pode ser excluída pois há histórico de uso e/ou análises e/ou ações!")
-    #  return false
-    #else
-    #  return true
-    #end
+    if self.usos.any? or self.analises.any? or self.acaos.any?
+      errors.add(:base, " Esta área não pode ser excluída pois há histórico de uso e/ou análises e/ou ações!")
+      return false
+    else
+      return true
+    end
   end
   
   def getGeoJsonFromRGeo
@@ -60,12 +58,12 @@ class Area < ActiveRecord::Base
     
     def getQntAnimais
       qnt = 0;
-      #self.usos.each do |u|
+      self.usos.each do |u|
         #pega qnt animais do uso em aberto (data fim nula)
-      #  if u.dt_fim.nil?
-      #    qnt = u.qnt_animais
-      #  end
-      #end
+        if u.dt_fim.nil?
+          qnt = u.qnt_animais
+        end
+      end
       qnt
     end
     

@@ -19,8 +19,8 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     @propriedade = @area.propriedade
     @analises = @area.analises
-    #@usos = @area.usos
-    #@acaos = @area.acaos
+    @usos = @area.usos
+    @acaos = @area.acaos
     @poligono = @area.getGeoJsonFromRGeo
     download = params[:download]
     if download
@@ -98,7 +98,7 @@ class AreasController < ApplicationController
         format.html { redirect_to @propriedade, notice: 'Área excluída com sucesso!' }
       else
         @analises = @area.analises
-        #@usos = @area.usos
+        @usos = @area.usos
         @poligono = @area.getGeoJsonFromRGeo
         format.html { render :show }
       end
