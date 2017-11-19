@@ -21,8 +21,11 @@ class Propriedade < ApplicationRecord
   def getQntAnimais
     qnt = 0;
     self.areas.each do |a|
-      #TODO pegar valor da soma da última locação
-      qnt= qnt + 1;
+      a.usos.each do |u|
+        if u.dt_fim.nil?
+          qnt= qnt + u.qnt_animais;    
+        end
+      end
     end
     qnt;
   end
