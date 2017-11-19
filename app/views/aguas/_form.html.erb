@@ -47,6 +47,10 @@
   
   <script>
   var map;
+  
+  // Initialise the FeatureGroup to store editable layers
+  var drawnItems = new L.FeatureGroup();
+	
   $('#collapse').click(function(){
 	if($('#sidebar').hasClass('open')) {
 		$('#sidebar').removeClass('col-md-4');
@@ -108,9 +112,6 @@ function drawMap() {
 	map = L.map('map', mapOptions);
 	
     L.control.layers(baseMaps, overlays).addTo(map);
-	
-	// Initialise the FeatureGroup to store editable layers
-	var drawnItems = new L.FeatureGroup();
 	
 	var editar = false;
 	
