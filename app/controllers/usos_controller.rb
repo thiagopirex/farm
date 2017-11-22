@@ -1,4 +1,4 @@
-class UsosController < ApplicationController
+class UsosController < BasicController
   before_action :set_uso, only: [:show, :edit, :update, :destroy]
   
   

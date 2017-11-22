@@ -1,0 +1,25 @@
+<%= form_tag sessions_path do %>
+  <% if !notice.nil? %>
+	  <div class="alert alert-warning" style="width: 30%" role="alert">
+	  	<%= notice %> 
+	  </div>
+  <% end %>
+  <% if !alert.nil? %>
+	  <div class="alert alert-danger" style="width: 30%" role="danger">
+	  	<%= alert %> 
+	  </div>
+  <% end %>
+  <div class="field">
+    <%= label_tag :Usuário %><br />
+    <%= text_field_tag :user, params[:user] %>
+  </div>
+  <div class="field">
+    <%= label_tag :Senha %><br />
+    <%= password_field_tag :password %>
+  </div>
+  <div class="actions"><%= submit_tag "Log In" %></div>
+<% end %>
+
+<script language="JavaScript">
+$("#user").focus();
+</script>

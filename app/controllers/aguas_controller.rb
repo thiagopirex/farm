@@ -1,4 +1,4 @@
-class AguasController < ApplicationController
+class AguasController < BasicController
   before_action :set_agua, only: [:show, :edit, :update, :destroy]
 
   # GET /aguas

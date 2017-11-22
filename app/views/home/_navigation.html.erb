@@ -1,5 +1,7 @@
 <nav class="navbar navbar-inverse">
   <div class="container">
+  	<% if logged_in? %>
+  	<!-- com autenticacao -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
@@ -21,19 +23,34 @@
             <li role="separator" class="divider"></li>
             <li><%= link_to 'Nova Propriedade', new_propriedade_path %></li>
             <li role="separator" class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
+            <!--
+            	<li><a href="#">One more separated link</a></li>
+             -->
           </ul>
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
       	<form class="navbar-form navbar-left">
-	        <div class="form-group" style="color: white; margin-top: 8px; font-size: 18px;">
+	        <div class="form-group" style="color: white; font-size: 18px;">
 	          <%= if !@propriedade.nil? && !@propriedade.id.nil?
 	          	 link_to @propriedade.nome, @propriedade, class:"btn btn-warning btn-md"
 	          	end %>
 	        </div>
 	      </form>
+	      <li><%= link_to 'Sair', logout_path, class: "navbar-brand" %></li>
       </ul>
-    </div><!-- /.navbar-collapse -->
+      
+      
+    </div>
+    <!-- /.navbar-collapse -->
+    
+	<% else %>
+	<!-- sem autenticacao -->
+	<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-right">
+		<li><%= link_to 'Entrar', login_path, class: "navbar-brand" %></li>
+	  </ul>
+	</div>
+	<% end %>
   </div><!-- /.container-fluid -->
 </nav>

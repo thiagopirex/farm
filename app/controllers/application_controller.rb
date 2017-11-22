@@ -6,4 +6,13 @@ class ApplicationController < ActionController::Base
   def carregarMenu
     @propriedades = Propriedade.all
   end
+  
+  private
+    def logged_in?
+      #true
+      @current_usuario ||= session[:usuario_id]
+    end
+    
+    helper_method :logged_in?
+
 end

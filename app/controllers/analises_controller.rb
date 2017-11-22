@@ -1,4 +1,4 @@
-class AnalisesController < ApplicationController
+class AnalisesController < BasicController
   before_action :set_analise, only: [:show, :edit, :update, :destroy]
 
   # GET /analises

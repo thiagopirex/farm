@@ -1,4 +1,4 @@
-class AcaosController < ApplicationController
+class AcaosController < BasicController
   before_action :set_acao, only: [:show, :edit, :update, :destroy]
   
   

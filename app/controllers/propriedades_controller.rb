@@ -1,5 +1,6 @@
-class PropriedadesController < ApplicationController
+class PropriedadesController < BasicController
   before_action :set_propriedade, only: [:show, :edit, :update, :destroy]
+  
 
   # GET /propriedades
   # GET /propriedades.json
