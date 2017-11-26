@@ -36,7 +36,7 @@ function escapeRegExp(str) {
 
 var centro = [-15.85, -46.08];
 var zoomDefault = 4;
-var zoomPropriedade = 14;
+var zoomPropriedade = 15;
 
 // load a tile layer
 var esri = L.tileLayer('//server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
