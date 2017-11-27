@@ -36,13 +36,27 @@
 		      		<%= f.file_field :file%>
 					</br>
 					</br>
-					<div class="pull-left">
-						<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
-						<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
-						 <% if !@area.foto_conteudo.nil? %> 
-							<%= link_to "Download", area_path(:id => @area.id, :download => true), class:"btn btn-default btn-md", method: :get %>
-					    <% end %>
-					</div>
+					<%= f.label :Latitude %>:
+					<input type="text" id="input_lat"/>
+					</br>
+					<%= f.label :Longitude %>:
+					<input type="text" id="input_lng"/>
+					</br>
+				</div>
+				<div class="pull-left">
+					<input type="button" id="add_lat_lng" class="btn btn-info btn-md" value="<-- Adicionar" />
+					<input type="button" id="clean" class="btn btn-danger btn-md" value="Limpar" />
+				</div>
+				</br>
+				</br>
+				</br>
+				</br>
+				<div class="pull-left">
+					<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
+					<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
+					 <% if !@area.foto_conteudo.nil? %> 
+						<%= link_to "Download", area_path(:id => @area.id, :download => true), class:"btn btn-default btn-md", method: :get %>
+				    <% end %>
 				</div>
 			</div>
         </div>
@@ -53,7 +67,17 @@
   var map;
   
   // Initialise the FeatureGroup to store editable layers
-  var drawnItems = new L.FeatureGroup();
+  var drawnItens = new L.FeatureGroup();
+  
+  var drawControlEditOnly;
+  var drawControlFull;
+  
+  var pontos = new Array();
+  var linhas = new Array();
+  var primeiroPonto = "";
+  var ultimoPonto = "";
+  var ultimoMarker = ""; 
+ 
   
   $('#collapse').click(function(){
 	if($('#sidebar').hasClass('open')) {
@@ -73,7 +97,16 @@
 		$('#map').addClass('col-md-8');
 		$("#collapse").attr("src", "/images/collapse-right.png");
 	}
-	});
+  });
+  
+  $('#add_lat_lng').click(function() {
+  	addPoint();
+  });
+  
+  $('#clean').click(function() {
+  	cleanVariables();
+  });
+
 
 
 drawMap();
@@ -102,7 +135,7 @@ function drawMap() {
 		var geoJson = L.geoJson(features, {
 			onEachFeature: function (feature, layer) {
 				layer.setStyle({color: 'yellow'});
-				layer.addTo(drawnItems);
+				layer.addTo(drawnItens);
 				capturarGeometria(layer);
 		   }
 		});
@@ -112,7 +145,7 @@ function drawMap() {
 	}
 	
 	// Initialise the draw control and pass it the FeatureGroup of editable layers
-	var drawControlFull = new L.Control.Draw({
+	drawControlFull = new L.Control.Draw({
 		draw: {
 			polyline: false,
 			marker: false,
@@ -126,18 +159,18 @@ function drawMap() {
 			}
 		},
   		edit: {
-    		featureGroup: drawnItems
+    		featureGroup: drawnItens
   		}
 	});
 	
-	var drawControlEditOnly = new L.Control.Draw({
+	drawControlEditOnly = new L.Control.Draw({
     	edit: {
-        	featureGroup: drawnItems
+        	featureGroup: drawnItens
     	},
     	draw: false
 	});
 	
-	map.addLayer(drawnItems);
+	map.addLayer(drawnItens);
 	
 	if (editar) {
 		map.removeControl(drawControlFull);
@@ -153,13 +186,13 @@ function drawMap() {
 	
 	map.on(L.Draw.Event.CREATED, function (e) {
   		var layer = e.layer;
-	  	layer.addTo(drawnItems);
+	  	layer.addTo(drawnItens);
 		var area = "Área: " + (toHectare(LGeo.area(layer))).toFixed(2) + " hectares"; 
 		layer.bindPopup(area);
     	
 		capturarGeometria(layer);
     	
-    	console.log("area: " + L.GeometryUtil.geodesicArea(layer.getLatLngs()));
+    	//console.log("area: " + L.GeometryUtil.geodesicArea(layer.getLatLngs()));
     	
     	map.removeControl(drawControlFull);
         map.addControl(drawControlEditOnly);
@@ -169,12 +202,13 @@ function drawMap() {
 	map.on(L.Draw.Event.DELETED, function(e) {
     	var type = e.layerType;
         var layer = e.layer;
-		var check =  Object.keys(drawnItems._layers).length;
+		var check =  Object.keys(drawnItens._layers).length;
 	    if (check === 0){
 	        map.removeControl(drawControlEditOnly);
 	        map.addControl(drawControlFull);
 	    };
 	    document.getElementById('poligono').value = "";
+	    disableFields(false);
 	});
 	
 	var stringGeometria;
@@ -201,9 +235,110 @@ function capturarGeometria(layer) {
 }
 
 function editGeometry(e) {
-	drawnItems.eachLayer(function (layer) {
+	drawnItens.eachLayer(function (layer) {
 		capturarGeometria(layer);
 	});
+}
+
+function addPoint() {
+	var lat = $("#input_lat").val();
+	var lng = $("#input_lng").val();
+	addPointToMap(lat, lng);	
+}
+
+
+function addPointToMap(lat, lng) {
+	var marker;
+	if (ultimoPonto != "") {
+		var pointA = ultimoPonto;
+		var pointB = new L.LatLng(lat, lng);
+		var pointList = [pointA, pointB];
+		ultimoPonto = pointB;
+		pontos.push(ultimoPonto);
+		// stop add points and transform
+		if (primeiroPontoIgualAoUltimo() && pontos.length > 2) {
+			map.removeLayer(ultimoMarker);
+			addToDrawnItens();
+		} else {
+			// continue
+			marker = L.marker([lat, lng]);
+			marker.addTo(map);
+			
+			var polyline = new L.Polyline(pointList, {
+			    color: 'red',
+			    weight: 3,
+			    opacity: 0.5,
+			    smoothFactor: 1
+			});
+			polyline.addTo(map);
+			linhas.push(polyline);
+			
+			if (ultimoMarker != "") {
+				map.removeLayer(ultimoMarker);
+			}
+			ultimoMarker = marker;
+		}
+	} else {
+		//primeiro ponto
+		ultimoPonto = new L.LatLng(lat, lng);
+		primeiroPonto = ultimoPonto;
+		
+		pontos.push(primeiroPonto);
+		
+		marker = L.marker([lat, lng]);
+		marker.addTo(map);
+		ultimoMarker = marker;
+	}
+}
+
+function addToDrawnItens() {
+	var polygon = new L.Polygon(pontos, {
+	    color: '#bada55'
+	    //,weight: 3,opacity: 0.5,smoothFactor: 1
+	});
+	polygon.addTo(drawnItens);
+	
+	capturarGeometria(polygon);
+	
+	map.removeControl(drawControlFull);
+    map.addControl(drawControlEditOnly);
+    
+    cleanVariables();
+	disableFields(true);
+}
+
+function disableFields(disable) {
+	$("#input_lat").attr('readonly', disable);
+	$("#input_lng").attr('readonly', disable);
+	$("#input_lat").val("");
+	$("#input_lng").val("");
+	$("#add_lat_lng").attr("disabled", disable);
+	$("#clean").attr("disabled", disable);
+}
+
+function primeiroPontoIgualAoUltimo () {
+	return primeiroPonto != "" && ultimoPonto != ""
+		&& primeiroPonto.valueOf().lat == ultimoPonto.valueOf().lat
+		&& primeiroPonto.valueOf().lng == ultimoPonto.valueOf().lng
+		;
+}
+
+function cleanVariables() {
+	if (linhas != "") {
+		for (var i = 0; i < linhas.length; i++) {
+			map.removeLayer(linhas[i]);
+		}
+	}
+	
+	if (ultimoMarker != "") {
+		ultimoMarker.removeFrom(map);
+	}
+
+	primeiroPonto = "";	
+	ultimoPonto = "";
+	ultimoMarker = "";
+	pontos = new Array();
+	linhas = new Array();
 }
 </script>
 <% end %>

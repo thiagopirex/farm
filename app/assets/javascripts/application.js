@@ -131,6 +131,7 @@ function adicionarPoligonoArea(stringGeometria, map, link) {
 		var geoJson = L.geoJson(features);
 		
 		
+		
 		var geoJson = L.geoJson(features, {
 			onEachFeature: function (feature, layer) {
 				layer.setStyle({color: '#00FFFF'});
