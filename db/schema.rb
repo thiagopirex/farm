@@ -10,22 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117020545) do
+ActiveRecord::Schema.define(version: 20171117020537) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
-
-  create_table "acaos", force: :cascade do |t|
-    t.string "nm_acao"
-    t.date "dt_acao"
-    t.decimal "vl_acao"
-    t.string "ds_observacao"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "area_id"
-    t.index ["area_id"], name: "index_acaos_on_area_id"
-  end
 
   create_table "aguas", force: :cascade do |t|
     t.string "tipo"
@@ -38,17 +27,6 @@ ActiveRecord::Schema.define(version: 20171117020545) do
     t.index ["propriedade_id"], name: "index_aguas_on_propriedade_id"
   end
 
-  create_table "analises", force: :cascade do |t|
-    t.date "data"
-    t.string "arquivo_nome"
-    t.binary "arquivo_conteudo"
-    t.string "arquivo_tipo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "area_id"
-    t.index ["area_id"], name: "index_analises_on_area_id"
-  end
-
   create_table "areas", force: :cascade do |t|
     t.string "nome"
     t.string "situacao"
@@ -56,9 +34,6 @@ ActiveRecord::Schema.define(version: 20171117020545) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "propriedade_id"
-    t.string "pastagem_atual"
-    t.binary "foto_conteudo"
-    t.string "foto_tipo"
     t.index ["propriedade_id"], name: "index_areas_on_propriedade_id"
   end
 
@@ -70,19 +45,5 @@ ActiveRecord::Schema.define(version: 20171117020545) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "usos", force: :cascade do |t|
-    t.date "dt_inicio"
-    t.date "dt_fim"
-    t.integer "qnt_animais"
-    t.string "idade_animais"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "area_id"
-    t.index ["area_id"], name: "index_usos_on_area_id"
-  end
-
-  add_foreign_key "acaos", "areas"
-  add_foreign_key "analises", "areas"
   add_foreign_key "areas", "propriedades"
-  add_foreign_key "usos", "areas"
 end
