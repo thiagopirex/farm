@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   def create
-    usuario = ENV['user']
-    senha = ENV['passwd']
+    usuario = "1" #ENV['user']
+    senha = "1" #ENV['passwd']
     if params[:user] == usuario && params[:password] == senha
       session[:usuario_id] = 123
       redirect_to root_url

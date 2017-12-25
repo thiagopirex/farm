@@ -31,6 +31,7 @@ gem 'jquery-rails'
 #rake assets:precompile
 #commit public/assets dir
 
+#gem 'bootstrap-sass'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.7'
