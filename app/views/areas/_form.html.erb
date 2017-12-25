@@ -14,52 +14,50 @@
   	
   <div class="container">
     <div class="row">
-        <div class="row">
-            <div class="col-md-8" id="map"></div>
-            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
-            <div class="col-md-4 open" id="sidebar">
-				
-				<div class="field">
-					<%= f.label :nome %>: 
-				    <%= f.text_field :nome %>
+        <div class="col-md-8" id="map"></div>
+        <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
+        <div class="col-md-4 open" id="sidebar">
+			
+			<div class="field">
+				<%= f.label :nome %>: 
+			    <%= f.text_field :nome %>
+			    </br>
+			    <%= f.label :condição %>:
+				<%= f.text_field :situacao %>
+				</br>
+			    <%= f.label :pastagem_atual %>:
+				<%= f.text_field :pastagem_atual %>
+				<% if !@area.foto_conteudo.nil? %>
+	      			<%= getImgBase64(@area) %>
 				    </br>
-				    <%= f.label :condição %>:
-					<%= f.text_field :situacao %>
-					</br>
-				    <%= f.label :pastagem_atual %>:
-					<%= f.text_field :pastagem_atual %>
-					<% if !@area.foto_conteudo.nil? %>
-		      			<%= getImgBase64(@area) %>
-					    </br>
-					    </br>
-		      		<% end %>
-		      		<%= f.file_field :file%>
-					</br>
-					</br>
-					<%= f.label :Latitude %>:
-					<input type="text" id="input_lat"/>
-					</br>
-					<%= f.label :Longitude %>:
-					<input type="text" id="input_lng"/>
-					</br>
-				</div>
-				<div class="pull-left">
-					<input type="button" id="add_lat_lng" class="btn btn-info btn-md" value="<-- Adicionar" />
-					<input type="button" id="clean" class="btn btn-danger btn-md" value="Limpar" />
-				</div>
+				    </br>
+	      		<% end %>
+	      		<%= f.file_field :file%>
 				</br>
 				</br>
+				<%= f.label :Latitude %>:
+				<input type="text" id="input_lat"/>
 				</br>
+				<%= f.label :Longitude %>:
+				<input type="text" id="input_lng"/>
 				</br>
-				<div class="pull-left">
-					<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
-					<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
-					 <% if !@area.foto_conteudo.nil? %> 
-						<%= link_to "Download", area_path(:id => @area.id, :download => true), class:"btn btn-default btn-md", method: :get %>
-				    <% end %>
-				</div>
 			</div>
-        </div>
+			<div class="pull-left">
+				<input type="button" id="add_lat_lng" class="btn btn-info btn-md" value="<-- Adicionar" />
+				<input type="button" id="clean" class="btn btn-danger btn-md" value="Limpar" />
+			</div>
+			</br>
+			</br>
+			</br>
+			</br>
+			<div class="pull-left">
+				<%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
+				<%= link_to 'Voltar', @propriedade, class:"btn btn-default btn-md" %>
+				 <% if !@area.foto_conteudo.nil? %> 
+					<%= link_to "Download", area_path(:id => @area.id, :download => true), class:"btn btn-default btn-md", method: :get %>
+			    <% end %>
+			</div>
+		</div>
     </div>
 </div>
   
