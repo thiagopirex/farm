@@ -1,0 +1,29 @@
+version: '3'
+services:
+  farm_prod:
+    image: farm
+    container_name: farm_prod
+    ports:
+        - 3001:3000
+    environment:
+        - LOGIN_USER=thiago
+        - LOGIN_PASSWORD=thiago
+        - DATABASE_USER=farm_prod_apl
+        - DATABASE_PASSWORD=farm_prod_apl
+        - DATABASE_NAME=farm_prod
+        - DATABASE_HOST=172.20.0.1
+        - DATABASE_PORT=5432  
+
+  farm_dev:
+    image: farm
+    container_name: farm_dev
+    ports:
+        - 3002:3000
+    environment:
+        - LOGIN_USER=thiago
+        - LOGIN_PASSWORD=thiago
+        - DATABASE_USER=farm_dev_apl
+        - DATABASE_PASSWORD=farm_dev_apl
+        - DATABASE_NAME=farm_dev
+        - DATABASE_HOST=172.20.0.1
+        - DATABASE_PORT=5432
