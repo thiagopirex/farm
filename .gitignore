@@ -1,0 +1,9 @@
+public/assets
+
+# Ignore encrypted secrets key file.
+config/secrets.yml.key
+tmp
+scripts
+vendor/cache
+.project
+log
