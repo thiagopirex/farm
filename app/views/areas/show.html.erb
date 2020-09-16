@@ -11,14 +11,18 @@
   <% end %>
     <div class="row">
         <div class="row">
-            <div class="col-md-8" id="map"></div>
-            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
-            <div class="col-md-4 open" id="sidebar">
+            <div class="col-md-8" id="map" style="width: 75%"></div>
+            <div class="col-md-4 open" id="sidebar" style="width: 24%">
 				<strong style="margin-left: 10px;">Nome:</strong>
 	        	<%= @area.nome %>
 	        	</br>
 	        	<strong style="margin-left: 10px;">Situação:</strong>
 	        	<%= @area.situacao %>
+	        	
+	        	<% if !@area.foto_conteudo.nil? %>
+	      			<%= getImgBase64(@area) %>
+					<%= link_to "Download", @area, class:"btn btn-default btn-md", method: :get %>
+	      		<% end %>
 	        	</br></br></br></br>
 				<div class="actions">
 				    <%= link_to 'Editar', edit_area_path(@area), 
@@ -217,41 +221,30 @@
 </div>
 <script>
   	var map;
-  $('#collapse').click(function(){
-	if($('#sidebar').hasClass('open')) {
-		$('#sidebar').removeClass('col-md-4');
-		$('#sidebar').removeClass('open');
-		$('#sidebar').addClass('hidden');
-		$('#map').addClass('col-md-12');
-		$('#map').removeClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-left.png");
-	} else {
-	    $('#sidebar').addClass('col-md-4');
-		$('#sidebar').addClass('open');
-		$('#sidebar').removeClass('hidden');
-		$('#map').removeClass('col-md-12');
-		$('#map').addClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-right.png");
-	}
-    map.remove();
-    drawMap();
-	});
 
-function drawMap() {
-  	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
-  	
-  	var mapOptions = getMapOptions(geometriaSede);
-  	
-	map = L.map('map', mapOptions);
-	
-	var measureControl = L.control.measure(measureOptions);
-	measureControl.addTo(map);
-  	
-    L.control.layers(baseMaps).addTo(map);
-   
-    var stringGeometria = '<%= @poligono %>';
-    adicionarPoligonoArea(stringGeometria, map);
-}
-drawMap();
+	function drawMap() {
+	  	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
+	  	
+	  	var mapOptions = getMapOptions(geometriaSede);
+	  	
+		map = L.map('map', mapOptions);
+		
+		addCollapseControl(map);
+		L.control.layers(baseMaps).addTo(map);
+		L.control.measure(measureOptions).addTo(map);
+		addReloadControl(map);
+		
+		img = '';
+		<% if !@area.foto_conteudo.nil? %>
+			var tipo = "<%= raw (@area.foto_tipo) %>";
+	   		var base64 = "<%=  @area.getContentImgBase64 %>";
+			img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+		<% end %>
+
+	   		   
+	    var stringGeometria = '<%= @poligono %>';
+	    adicionarPoligonoArea(stringGeometria, map, "", img);
+	}
+	drawMap();
 </script>
 </div>

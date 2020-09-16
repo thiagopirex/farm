@@ -30,7 +30,7 @@
   
   <div id="map"></div>
   <script>
-  var map;
+    var map;
   	
   	var geometriaSede = '<%= @sede_ponto %>';
   	
@@ -41,6 +41,7 @@
 	addLatLng(map);
 	
 	L.control.layers(baseMaps).addTo(map);
+	L.control.measure(measureOptions).addTo(map);
 	
 	// Initialise the FeatureGroup to store editable layers
 	var drawnItems = new L.FeatureGroup();

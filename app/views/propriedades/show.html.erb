@@ -2,17 +2,16 @@
 	<p id="notice"><%= notice %></p>
     <div class="row">
         <div class="row">
-            <div class="col-md-8" id="map" style="width: 1024px"></div>
-            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
-            <div class="col-md-4 open" id="sidebar">
+            <div class="col-md-8" id="map" style="width: 75%"></div>
+            <div class="col-md-4 open" id="sidebar" style="width:24%; margin-left: 10px">
 				
 				<div class="field">
 					<strong style="margin-left: 10px;">Propriedade:</strong>
   					<%= @propriedade.nome %> (<span id="areaTotal" title="Calculado a partir das áreas informadas!"></span>)
 		  			</br></br>
-		  			<strong style="margin-left: 10px;">NIRF:</strong> ????
+		  			<strong style="margin-left: 10px;">NIRF:</strong> <%=@propriedade.nirf %>
 		  			</br></br>
-		  			<strong style="margin-left: 10px;">Quantidade de Animais: </strong><%=@propriedade.getQntAnimais %>
+		  			<strong style="margin-left: 10px;">Total de Animais: </strong><%=@propriedade.getQntAnimais %>
 		  			</br></br></br>
 		  			<% if @propriedade.areas.count == 0 %>
 		  				</br>
@@ -37,29 +36,11 @@
   
   <script>
   var map;
-  $('#collapse').click(function(){
-	if($('#sidebar').hasClass('open')) {
-		$('#sidebar').removeClass('col-md-4');
-		$('#sidebar').removeClass('open');
-		$('#sidebar').addClass('hidden');
-		$('#map').addClass('col-md-12');
-		$('#map').removeClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-left.png");
-		map.remove();
-    	drawMap();
-	} else {
-	    $('#sidebar').addClass('col-md-4');
-		$('#sidebar').addClass('open');
-		$('#sidebar').removeClass('hidden');
-		$('#map').removeClass('col-md-12');
-		$('#map').addClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-right.png");
-	}
-	});
-
-drawMap();
   
-function drawMap() {
+
+  drawMap();
+  
+  function drawMap() {
 	//carrega layer pontos de água
 	var layerPontosAgua = L.layerGroup();
     <% @propriedade.aguas.each do |a| %>
@@ -69,7 +50,7 @@ function drawMap() {
 	   	img = "";
 	   	if (tipo) {
 	   		base64 = "<%=  a.getContentImgBase64 %>";
-		   	img = "<img style=\'width: 200px; height: 150px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+		   	img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
 	   	}
 	   	link = "<a href='/aguas/" + id + "/edit'>Editar</a>";
 	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/aguas/" + id + "'>Excluir</a>"
@@ -106,14 +87,13 @@ function drawMap() {
   	
 	map = L.map('map', mapOptions);
 	
-	var measureControl = L.control.measure(measureOptions);
-	measureControl.addTo(map);
-	
-	
 	//Adiciona os controles ao mapa
+	addCollapseControl(map);
     L.control.layers(baseMaps, overlays).addTo(map);
-    
-    
+	L.control.measure(measureOptions).addTo(map);
+	addReloadControl(map);
+	
+	
     var stringGeometria;
     var link;
     var id;
@@ -124,7 +104,12 @@ function drawMap() {
 	   	link = "</br><a href='/areas/" + id + "'>Detalhar</a>";
 	   	link = link + " | <a href='/areas/" + id + "/edit'>Editar</a>";
 	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/areas/" + id + "'>Excluir</a>"
-	   	adicionarPoligonoArea(stringGeometria, map, link);
+	   	img = "";
+	   	<% if !a.foto_conteudo.nil? %>
+	   		base64 = "<%=  a.getContentImgBase64 %>";
+			img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+		<% end %>
+	   	adicionarPoligonoArea(stringGeometria, map, link, img);
 	   	areaTotal = areaTotal +  getAreaPoligonoHectare(stringGeometria);
     <% end %>
     

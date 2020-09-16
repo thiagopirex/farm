@@ -6,7 +6,7 @@
 </div>
 <%= link_to 'Clique aqui', new_propriedade_path %> para começar!
 <% else %>
-Total de propriedades registradas: <%= @propriedades.count%>
+Total de propriedades registradas: <a title="Ver todas" href='/propriedades/'><%= @propriedades.count%></a>
 </br>
 <% end%>
 

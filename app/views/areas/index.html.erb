@@ -52,17 +52,20 @@
 
 
 <script>
-  	var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
   	
-  	var mapOptions = getMapOptions(geometriaSede);
   	
-	var map = L.map('map', mapOptions);
-	
-    L.control.layers(baseMaps).addTo(map);
-    
-    var measureControl = L.control.measure(measureOptions);
-	measureControl.addTo(map);
-   
+  	drawMap();
+  	var map;
+  	function drawMap() {
+  		var geometriaSede =  '<%= @propriedade.getGeoJsonFromRGeoPoint %>'; 
+  	
+  		var mapOptions = getMapOptions(geometriaSede);
+		map = L.map('map', mapOptions);
+		
+	    L.control.layers(baseMaps).addTo(map);
+	    L.control.measure(measureOptions).addTo(map);
+	    addReloadControl(map);
+   	}
     var stringGeometria;
     var link;
     var id;
@@ -72,7 +75,13 @@
 	   	link = "</br><a href='/areas/" + id + "'>Detalhar</a>";
 	   	link = link + " | <a href='/areas/" + id + "/edit'>Editar</a>";
 	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/areas/" + id + "'>Excluir</a>"
-	   	adicionarPoligonoArea(stringGeometria, map, link);
+	   	img = "";
+	   	<% if !a.foto_conteudo.nil? %>
+	   		base64 = "<%=  a.getContentImgBase64 %>";
+	   		var tipo = "<%= raw (a.foto_tipo) %>";
+			img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+		<% end %>
+	   	adicionarPoligonoArea(stringGeometria, map, link, img);
     <% end %>
 </script>
 

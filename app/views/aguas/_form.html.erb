@@ -17,9 +17,8 @@
   <div class="container">
     <div class="row">
         <div class="row">
-            <div class="col-md-8" id="map"></div>
-            <img style="margin-right: -30px;" id="collapse" width="20px" height="20px" src="/images/collapse-right.png"/>
-            <div class="col-md-4 open" id="sidebar">
+            <div class="col-md-8" id="map" style="width: 75%"></div>
+            <div class="col-md-4 open" id="sidebar" style="width: 24%">
 				<div class="field">
 					<div class="field">
 						<%= f.label :tipo_da_fonte %>: 
@@ -51,29 +50,9 @@
   // Initialise the FeatureGroup to store editable layers
   var drawnItems = new L.FeatureGroup();
 	
-  $('#collapse').click(function(){
-	if($('#sidebar').hasClass('open')) {
-		$('#sidebar').removeClass('col-md-4');
-		$('#sidebar').removeClass('open');
-		$('#sidebar').addClass('hidden');
-		$('#map').addClass('col-md-12');
-		$('#map').removeClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-left.png");
-		map.remove();
-    	drawMap();
-	} else {
-	    $('#sidebar').addClass('col-md-4');
-		$('#sidebar').addClass('open');
-		$('#sidebar').removeClass('hidden');
-		$('#map').removeClass('col-md-12');
-		$('#map').addClass('col-md-8');
-		$("#collapse").attr("src", "/images/collapse-right.png");
-	}
-  });
-
-drawMap();
+  drawMap();
   
-function drawMap() {
+  function drawMap() {
   
    //carrega layer pontos de água existentes
 	var layerPontosAgua = L.layerGroup();
@@ -85,7 +64,7 @@ function drawMap() {
 		   	img = "";
 		   	if (tipo) {
 		   		base64 = "<%=  a.getContentImgBase64 %>";
-			   	img = "<img style=\'width: 200px; height: 150px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
+			   	img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
 		   	}
 		   	link = "<a href='/aguas/" + id + "/edit'>Editar</a>";
 		   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/aguas/" + id + "'>Excluir</a>"
@@ -107,11 +86,12 @@ function drawMap() {
   		mapOptions = getMapOptions(geometriaSede);	
   	<% end %>
   	
-  	
-  	
 	map = L.map('map', mapOptions);
 	
-    L.control.layers(baseMaps, overlays).addTo(map);
+    addCollapseControl(map);
+	L.control.layers(baseMaps).addTo(map);
+	L.control.measure(measureOptions).addTo(map);
+	addReloadControl(map);
 	
 	var editar = false;
 	
