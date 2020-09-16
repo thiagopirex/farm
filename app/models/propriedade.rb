@@ -10,14 +10,18 @@ class Propriedade < ApplicationRecord
         propriedades = {}
         feature = {'type' => 'Feature', 'properties' => propriedades, 'geometry' => geometry}
         
-        
-        # geos_wgs84_factory = RGeo::Geos.factory(srid: 3857, srs_database: srs_db)
-        # geos_polygon = RGeo::Feature.cast(self.limites, geos_wgs84_factory)
-        
         feature.to_json
       end
   end
   
+  
+  # TODO: alterar para consulta em banco
+  #SELECT sum(u.qnt_animais)
+  # FROM public.usos u
+  # inner join public.areas a on a.id = u.area_id 
+  # where u.dt_fim is null
+  #   and a.propriedade_id = 1
+    
   def getQntAnimais
     qnt = 0;
     self.areas.each do |a|
