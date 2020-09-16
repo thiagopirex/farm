@@ -26,6 +26,70 @@
 // adicionar medidas diretamente no mapa: https://github.com/ljagis/leaflet-measure
 // layers control: http://leafletjs.com/examples/layers-control/example.html
 
+function reloadMap() {
+	map.remove();
+    drawMap();
+}
+
+function addReloadControl(map) {
+	var reloadControl = L.control();
+
+    reloadControl.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+    };
+
+    reloadControl.update = function (props) {
+        this._div.innerHTML = '<img style="cursor:pointer" id="collapse" title="Recarregar mapa" width="40px" height="40px" src="/images/reload.png" onclick="reloadMap()"/>';
+    };
+
+    reloadControl.addTo(map);
+}
+
+function addCollapseControl(map) {
+	var collapseControl = L.control();
+
+    collapseControl.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+    };
+
+    collapseControl.update = function (props) {
+        this._div.innerHTML = '<img id="collapse" width="42px" height="42px" title="Ampliar mapa" style="background-color: white; cursor:pointer;" src="/images/collapse-right.png" onclick="showHideMapProperties()"/>';
+    };
+
+    collapseControl.addTo(map);
+	
+}
+
+function showHideMapProperties() {	
+	if($('#sidebar').hasClass('open')) {
+		$('#sidebar').removeClass('col-md-4');
+		$('#sidebar').removeClass('open');
+		$('#sidebar').addClass('hidden');
+		$("#map").css("width", "100%");
+		$('#map').addClass('col-md-12');
+		$('#map').removeClass('col-md-8');
+		reloadMap();
+		$("#collapse").attr("title", "Reduzir mapa");
+		$("#collapse").attr("src", "/images/collapse-left.png");
+	} else {
+	    $('#sidebar').addClass('col-md-4');
+		$('#sidebar').addClass('open');
+		$('#sidebar').removeClass('hidden');
+		$("#map").css("width", "75%");
+		$('#map').removeClass('col-md-12');
+		$('#map').addClass('col-md-8');
+		reloadMap();
+		$("#collapse").attr("title", "Ampliar mapa");
+		$("#collapse").attr("src", "/images/collapse-right.png");
+	}
+}
+
+
+
 function replaceAll(str, find, replace) {
 	return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
 }
@@ -35,7 +99,7 @@ function escapeRegExp(str) {
 }
 
 var centro = [-15.85, -46.08];
-var zoomDefault = 4;
+var zoomDefault = 7;
 var zoomPropriedade = 15;
 
 // load a tile layer
@@ -61,7 +125,7 @@ var baseMaps = {
 };
 
 var measureOptions = {
-	position: 'bottomleft',
+	position: 'topright',
 	primaryLengthUnit: 'meters', 
 	secondaryLengthUnit: 'kilometers',
 	primaryAreaUnit: 'hectares',
@@ -76,7 +140,8 @@ var LeafIcon = L.Icon.extend({
 	});
 	
 var sedeIcon = new LeafIcon({
-    iconUrl: '/images/marker-icon2-green.png'
+    iconUrl: '/images/marker-icon2-green.png',
+    iconSize: [40, 55]
 });
 
 var aguaEdicaoIcon = new LeafIcon({
@@ -121,10 +186,10 @@ function getCentro(stringGeometry) {
 }
 
 function adicionarPoligonoArea(stringGeometria, map) {
-	adicionarPoligonoArea(stringGeometria, map, "");
+	adicionarPoligonoArea(stringGeometria, map, "", "");
 }
 
-function adicionarPoligonoArea(stringGeometria, map, link) {
+function adicionarPoligonoArea(stringGeometria, map, link, img) {
 	if (stringGeometria != "") {
 		stringGeometria = replaceAll(stringGeometria, "&quot;", "\"");
 		var features = JSON.parse(stringGeometria);
@@ -134,8 +199,9 @@ function adicionarPoligonoArea(stringGeometria, map, link) {
 		
 		var geoJson = L.geoJson(features, {
 			onEachFeature: function (feature, layer) {
-				layer.setStyle({color: '#00FFFF'});
-				layer.addTo(map);
+				//Color: cor da borda
+				//fillColor: cor do preenchimento
+				layer.setStyle({color: '#00FFFF'}); //azul
 				var prop = feature.properties;
 				var href = "";
 				if (link != null && link != "") {
@@ -148,9 +214,14 @@ function adicionarPoligonoArea(stringGeometria, map, link) {
 					situacao = "<br/>Condição: <b>" + prop.situacao + "</b>";
 				}
 				var anim = prop.animais;
+				var qntDiasComAnimais = "";
 				if (anim == '0') {
 					anim = "nenhum";
+				} else {
+					layer.setStyle({color: '#177011', fillColor: '#177011'}); //com animais - verde escuro
+					qntDiasComAnimais = "<br/>Qnt de dias com animais: " + prop.qntDiasComAnimais;
 				}
+				layer.addTo(map);
 				var historico = "<br/>Última alteração: " + prop.historico;
 				var animais = "<br/>Qnt Animais: " + anim;
 				var pastagemAtual = "<br/>Pastagem: " + prop.pastagem;
@@ -158,9 +229,12 @@ function adicionarPoligonoArea(stringGeometria, map, link) {
 				var area = "</br>Área Total: " + (toHectare(LGeo.area(layer))).toFixed(2) + " hectares"; 
 				 
 				layer.bindPopup(
+					img +
+					"</br>" + "</br>" +
 					nome + 
 					situacao +
 					animais + 
+					qntDiasComAnimais +
 					pastagemAtual +
 					area + 
 					analises +
