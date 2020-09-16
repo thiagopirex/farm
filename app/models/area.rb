@@ -23,51 +23,40 @@ class Area < ActiveRecord::Base
         hash = RGeo::GeoJSON.encode(self.limites)
         #@poligono = hash.to_json
         geometry = {'type' => hash['type'], 'coordinates' => hash['coordinates']}
+        
+        qnt = getDadosDeUso
+        
         propriedades = {
           'nome' => self.nome, 
           'situacao' => self.situacao, 
-          'animais' => getQntAnimais, 
+          'animais' => qnt[0],
+          'qntDiasComAnimais' => qnt[1],
           'pastagem' => self.pastagem_atual,
           'analises' => self.analises.count,
           'historico' => (self.updated_at).strftime('%d/%m/%Y  %H:%M')}
         feature = {'type' => 'Feature', 'properties' => propriedades, 'geometry' => geometry}
         
-        
-        # geos_wgs84_factory = RGeo::Geos.factory(srid: 3857, srs_database: srs_db)
-        # geos_polygon = RGeo::Feature.cast(self.limites, geos_wgs84_factory)
         hec = self.limites.area.to_d
-        #puts "area: " + self.limites.area.to_s
         
         feature.to_json
       end
     end  
-  # factory = RGeo::Geographic.spherical_factory(:srid => 4326)
-    # # # This satisfies a linear ring requirement: to be a closed linear string
-    # a=[factory.point(10,10)]
-    # a << factory.point(10,30)
-    # a << factory.point(40,20)
-# #     
-    # # # Then when trying to build a linear ring I get nil. Am I missing an additional requirement?
-    # # linear_ring = factory.linear_ring(a) 
-    # # Then tried building a line string 
-    # linestring = factory.line_string(a)
-#     
-    # # # Attempted to build a polygon, failed
-    # result = factory.polygon(linestring)
-    # # @area.limites = result
     
-    def getQntAnimais
-      qnt = 0;
-      self.usos.each do |u|
-        #pega qnt animais do uso em aberto (data fim nula)
-        if u.dt_fim.nil?
-          qnt = u.qnt_animais
-        end
+  def getDadosDeUso
+    dados = [0,0]
+    self.usos.each do |u|
+      #uso em aberto (data fim nula)
+      if u.dt_fim.nil?
+        dados = [
+          u.qnt_animais,
+          (DateTime.now - u.dt_inicio).to_i
+        ]
       end
-      qnt
     end
+    dados
+  end
     
-     def getContentImgBase64
+  def getContentImgBase64
     if !self.foto_conteudo.nil?
       Base64.encode64(self.foto_conteudo).gsub("\n", '')
     end
