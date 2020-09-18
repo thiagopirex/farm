@@ -451,6 +451,9 @@
 	text-align: center;
 	margin-bottom: 20px;
 	}
+.leaflet-popup-content {
+	font-size: larger;
+	}
 .leaflet-popup-content-wrapper {
 	padding: 1px;
 	text-align: left;

@@ -215,36 +215,38 @@ function adicionarPoligonoArea(stringGeometria, map, link, img) {
 				}
 				var anim = prop.animais;
 				var qntDiasComAnimais = "";
+				var indiceOcupacao = "";
+				var areaHa = (toHectare(LGeo.area(layer))).toFixed(2);
+				var area = "</br>Área Total: " + areaHa + " hectares";
+				var historico = "<br/>Última alteração: " + prop.historico;
+				var pastagemAtual = "<br/>Pastagem: " + prop.pastagem;
+				var analises = "<br/>Análises efetuadas: " + prop.analises;
 				if (anim == '0') {
 					anim = "nenhum";
 				} else {
 					layer.setStyle({color: '#177011', fillColor: '#177011'}); //com animais - verde escuro
 					qntDiasComAnimais = "<br/>Qnt de dias com animais: " + prop.qntDiasComAnimais;
+					indiceOcupacao = "<br/>Índice de ocupação: " + (prop.animais/areaHa).toFixed(2) + " UA/ha";
 				}
 				layer.addTo(map);
-				var historico = "<br/>Última alteração: " + prop.historico;
 				var animais = "<br/>Qnt Animais: " + anim;
-				var pastagemAtual = "<br/>Pastagem: " + prop.pastagem;
-				var analises = "<br/>Análises efetuadas: " + prop.analises;
-				var area = "</br>Área Total: " + (toHectare(LGeo.area(layer))).toFixed(2) + " hectares"; 
 				 
 				layer.bindPopup(
 					img +
 					"</br>" + "</br>" +
 					nome + 
 					situacao +
-					animais + 
-					qntDiasComAnimais +
 					pastagemAtual +
+					animais + 
 					area + 
+					indiceOcupacao +
+					qntDiasComAnimais +
 					analises +
 					historico +
 					href);
 				
 		   }
 		});
-		
-		// geoJson.addTo(map);
 	}
 }
 
