@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171117020545) do
+ActiveRecord::Schema.define(version: 20201226200648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,14 @@ ActiveRecord::Schema.define(version: 20171117020545) do
     t.index ["propriedade_id"], name: "index_areas_on_propriedade_id"
   end
 
+  create_table "malha_aguas", force: :cascade do |t|
+    t.geometry "linha", limit: {:srid=>3857, :type=>"line_string"}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "propriedade_id"
+    t.index ["propriedade_id"], name: "index_malha_aguas_on_propriedade_id"
+  end
+
   create_table "propriedades", force: :cascade do |t|
     t.string "nome"
     t.integer "nirf"
@@ -84,5 +92,6 @@ ActiveRecord::Schema.define(version: 20171117020545) do
   add_foreign_key "acaos", "areas"
   add_foreign_key "analises", "areas"
   add_foreign_key "areas", "propriedades"
+  add_foreign_key "malha_aguas", "propriedades"
   add_foreign_key "usos", "areas"
 end

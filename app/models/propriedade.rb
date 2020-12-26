@@ -1,6 +1,7 @@
 class Propriedade < ApplicationRecord
   has_many :areas
   has_many :aguas
+  has_many :malhaAguas
   validates_presence_of :nome, :message => " - Este campo deve ser preenchido!"
   
   def getGeoJsonFromRGeoPoint

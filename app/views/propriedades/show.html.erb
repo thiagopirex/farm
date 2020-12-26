@@ -28,6 +28,8 @@
 		  				class:"btn btn-success btn-md botao" %>
 		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Ponto de Água</span>').html_safe, new_agua_path(:propriedade_id => @propriedade.id) , 
 		  				class:"btn btn-success btn-md botao" %>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Curso de Água</span>').html_safe, new_malha_agua_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
 				</div>
 			</div>
         </div>
@@ -73,13 +75,26 @@
 		editar = true;
 	}
 	
+	//carrega layer malha de água
+	var layerMalhaAgua = L.layerGroup();
+    <% @propriedade.malhaAguas.each do |m| %>
+	   	stringGeometria = '<%= m.getGeoJsonFromRGeoLine %>';
+	   	id = <%= m.id %>;
+
+	   	
+	   	link = "<a href='/malha_aguas/" + id + "/edit'>Editar</a>";
+	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/malha_aguas/" + id + "'>Excluir</a>"
+	   	addLayerMalhaAgua(stringGeometria, link, layerMalhaAgua);
+    <% end %>
+	
 	//layers opcionais
 	var overlays = {
 		"Sede": layerSede,
-    	"Pontos de Água": layerPontosAgua
+    	"Pontos de Água": layerPontosAgua,
+    	"Malha de Água": layerMalhaAgua
     }
     
-    var layersDefault = [layerSede, layerPontosAgua, google];
+    var layersDefault = [layerSede, layerPontosAgua, layerMalhaAgua, google];
     
     
     //Criação do mapa  	

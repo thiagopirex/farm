@@ -1,0 +1,5 @@
+<h2>Novo Curso de Água (<%=@propriedade.nome%>)</h2>
+
+<%= render 'form' %>
+
+<%= link_to 'Voltar', malha_aguas_path(:propriedade_id => @propriedade.id) %>

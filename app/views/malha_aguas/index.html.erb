@@ -1,0 +1,18 @@
+<p id="notice"><%= notice %></p>
+
+<table>
+  <tbody>
+    <% @malha_aguas.each do |malha_agua| %>
+      <tr>
+        
+        <td><%= link_to 'Show', malha_agua %></td>
+        <td><%= link_to 'Edit', edit_malha_agua_path(agua) %></td>
+        <td><%= link_to 'Destroy', malha_agua, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Agua', new_malha_agua_path %>
