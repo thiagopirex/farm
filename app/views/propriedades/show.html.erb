@@ -86,29 +86,9 @@
 	   	link = link + " | <a data-confirm='Tem certeza?' rel='nofollow' data-method='delete' href='/malha_aguas/" + id + "'>Excluir</a>"
 	   	addLayerMalhaAgua(stringGeometria, link, layerMalhaAgua);
     <% end %>
-	
-	//layers opcionais
-	var overlays = {
-		"Sede": layerSede,
-    	"Pontos de Água": layerPontosAgua,
-    	"Malha de Água": layerMalhaAgua
-    }
     
-    var layersDefault = [layerSede, layerPontosAgua, layerMalhaAgua, google];
-    
-    
-    //Criação do mapa  	
-  	var mapOptions = getMapOptionsWithLayers(stringGeometriaSede, layersDefault);
-  	
-	map = L.map('map', mapOptions);
-	
-	//Adiciona os controles ao mapa
-	addCollapseControl(map);
-    L.control.layers(baseMaps, overlays).addTo(map);
-	L.control.measure(measureOptions).addTo(map);
-	addReloadControl(map);
-	
-	
+    //carrega layer Area
+    var layerArea = L.layerGroup();
     var stringGeometria;
     var link;
     var id;
@@ -124,10 +104,32 @@
 	   		base64 = "<%=  a.getContentImgBase64 %>";
 			img = "<img style=\'width: 300px; height: 250px;\' src=\'data:"  + tipo + ";base64," + base64 + "'/>";
 		<% end %>
-	   	adicionarPoligonoArea(stringGeometria, map, link, img);
+	   	adicionarPoligonoArea(stringGeometria, layerArea, link, img);
 	   	areaTotal = areaTotal +  getAreaPoligonoHectare(stringGeometria);
     <% end %>
+	
+	//layers opcionais
+	var overlays = {
+		"Sede": layerSede,
+    	"Pontos de Água": layerPontosAgua,
+    	"Malha de Água": layerMalhaAgua,
+    	"Área": layerArea
+    }
     
+    var layersDefault = [layerSede, layerPontosAgua, layerMalhaAgua, layerArea, google];
+    
+    
+    //Criação do mapa  	
+  	var mapOptions = getMapOptionsWithLayers(stringGeometriaSede, layersDefault);
+  	
+	map = L.map('map', mapOptions);
+	
+	//Adiciona os controles ao mapa
+	addCollapseControl(map);
+    L.control.layers(baseMaps, overlays).addTo(map);
+	L.control.measure(measureOptions).addTo(map);
+	addReloadControl(map);
+	
     document.getElementById('areaTotal').innerHTML = areaTotal.toFixed(2) + ' hectares';
 }
 </script>
