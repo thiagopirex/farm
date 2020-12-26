@@ -244,7 +244,6 @@ function adicionarPoligonoArea(stringGeometria, map, link, img) {
 					analises +
 					historico +
 					href);
-				
 		   }
 		});
 	}
@@ -288,6 +287,31 @@ function addLayerPontoAgua(stringGeometria, img, link, layerDestination) {
 					"</br>" + "</br>" +
 					tipo + 
 					"</br>" + "</br>" +
+					href);
+				layer.addTo(layerDestination);
+		   }
+		});
+	
+	}
+}
+
+function addLayerMalhaAgua(stringGeometria, link, layerDestination) {
+	if (stringGeometria != "") {
+		stringGeometria = replaceAll(stringGeometria, "&quot;", "\"");
+		var features = JSON.parse(stringGeometria);
+		var geoJson = L.geoJson(features);
+		
+		
+		var geoJson = L.geoJson(features, {
+			onEachFeature: function (feature, layer) {
+				var prop = feature.properties;
+				var href = "";
+				if (link != null && link != "") {
+					href = link;
+				}
+				
+				 
+				layer.bindPopup(
 					href);
 				layer.addTo(layerDestination);
 		   }
