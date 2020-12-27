@@ -15,6 +15,12 @@ class MalhaAguasController < BasicController
   # GET /malha_aguas/1
   # GET /malha_aguas/1.json
   def show
+    if !params[:propriedade_id].nil?
+      @propriedade = Propriedade.find(params[:propriedade_id])
+      @malha_aguas = @propriedade.malhaAguas
+    else
+      @malha_aguas = MalhaAgua.all
+    end
   end
 
   # GET /aguas/new
@@ -27,9 +33,10 @@ class MalhaAguasController < BasicController
   # GET /malha_aguas/1/edit
   def edit
     @malha_agua = MalhaAgua.find(params[:id])
+    @linha = @malha_agua.getGeoJsonFromRGeoLine
     @propriedade = @malha_agua.propriedade
-    @malha_aguas = @propriedade.malha_aguas
-    @linha = @malhaAguas.getGeoJsonFromRGeoLine
+    @malha_aguas = @propriedade.malhaAguas
+    
   end
 
   # POST /malha_aguas
@@ -53,20 +60,11 @@ class MalhaAguasController < BasicController
   def update
     respond_to do |format|
       @atributos = malha_agua_params.clone
-      #updateLocalizacao
+      updateLinha
       
-      if @agua.update_attributes(@atributos)
-        if file #ganbiarra para atualizar o arquivo
-          if @agua.update_attribute(:foto_conteudo, file.read) && @agua.update_attribute(:foto_tipo, file.content_type)
-            format.html { redirect_to @agua.propriedade, notice: 'Ponto de Água atualizado com sucesso!' }
-            format.json { render :show, status: :ok, location: @agua }
-          else
-             response_error
-          end
-        else
-          format.html { redirect_to @agua.propriedade, notice: 'Ponto de Água atualizado com sucesso!' }
-          format.json { render :show, status: :ok, location: @agua }
-        end        
+      if @malha_agua.update_attributes(@atributos)
+          format.html { redirect_to @malha_agua.propriedade, notice: 'Curso de Água atualizado com sucesso!' }
+          format.json { render :show, status: :ok, location: @malha_agua }      
       else
         response_error
       end
@@ -104,11 +102,9 @@ class MalhaAguasController < BasicController
     def getRGeoFromGeoJson
       #https://github.com/rgeo/rgeo-geojson
       p = params[:linha]
-      # geometria = RGeo::GeoJSON.decode(p, json_parser: :json)
       if p != "valor" && p != ""
         geo_factory = RGeo::Geographic.spherical_factory(srid: 3857)
         geometria = RGeo::GeoJSON.decode(p, geo_factory: geo_factory, json_parser: :json)
-        # g = geometria.geometry
         g = geometria.geometry
         logger.debug "Tipo da geometria: #{g.geometry_type.type_name}"
         logger.debug "Geometria: #{g.as_text}"

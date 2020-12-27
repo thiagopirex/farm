@@ -85,7 +85,6 @@
 		var features = JSON.parse(stringGeometria);
 		var geoJson = L.geoJson(features, {
 			onEachFeature: function (feature, layer) {
-				layer.setIcon(aguaEdicaoIcon);
 				layer.addTo(drawnItems);
 		   }
 		});
