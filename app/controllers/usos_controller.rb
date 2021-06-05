@@ -79,6 +79,7 @@ class UsosController < BasicController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def uso_params
-      params.require(:uso).permit(:dt_inicio, :dt_fim, :qnt_animais, :idade_animais, :area_id)
+      params.require(:uso).permit(:dt_inicio, :dt_fim, :area_id, :qnt_macho_faixa_um, :qnt_macho_faixa_dois, 
+      :qnt_macho_faixa_tres, :qnt_femea_faixa_um, :qnt_femea_faixa_dois, :qnt_femea_faixa_tres)
     end
 end

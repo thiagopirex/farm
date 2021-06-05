@@ -48,7 +48,7 @@ class Area < ActiveRecord::Base
       #uso em aberto (data fim nula)
       if u.dt_fim.nil?
         dados = [
-          u.qnt_animais,
+          u.total_animais,
           (DateTime.now - u.dt_inicio).to_i
         ]
       end

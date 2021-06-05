@@ -118,8 +118,7 @@
 						      		<% end %>     
 						      	</td>
 						      	<td style="text-align: center"><%= calculaDiasCorridos(:inicio => uso.dt_inicio, :fim => uso.dt_fim)%></td>
-						        <td style="text-align: center"><%= uso.qnt_animais %></td>
-						        <td style="text-align: center"><%= uso.idade_animais %></td>
+						        <td style="text-align: center"><%= uso.total_animais %></td>
 						        <td style="text-align: center"><%= link_to 'Editar', edit_uso_path(uso), method: :get,
 						         class:"btn btn-info btn-sm" %></td>
 						        <td style="text-align: center"><%= link_to 'Excluir', uso, method: :delete, 

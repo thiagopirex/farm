@@ -16,37 +16,82 @@
 
   <div class="container">
     <div class="row">
-        <div class="row">
-            <div class="col-md-4 open" id="sidebar">
-				<div class="field">
+        <div class="col-md">
+			<div class="field">
+				<div class="col-md-4 open" id="sidebar">
 					<div class="input-append date" id="data_inicio" data-date-format="dd/mm/yyyy">
-				    	<%= f.label :Data_de_início %>
-				    	<%= f.text_field :dt_inicio, class: "form-control", size:"16" ,value: formatDate(:data => @uso.dt_inicio) %>
-				    	<span class="add-on"><i class="icon-th"></i></span>
-				    </div>
+				   		<%= f.label :Data_de_início %>
+				   		<%= f.text_field :dt_inicio, class: "form-control", size:"16" ,value: formatDate(:data => @uso.dt_inicio) %>
+				   		<span class="add-on"><i class="icon-th"></i></span>
+			   		</div>
 				</div>
-				<div class="field">
+        	</div>
+        </div>
+		<div class="col-md">
+			<div class="field">
+				<div class="col-md-4 open" id="sidebar">
 					<div class="input-append date" id="data_fim" data-date-format="dd/mm/yyyy">
 				    	<%= f.label :Data_de_término %>
 				    	<%= f.text_field :dt_fim, class: "form-control", value: formatDate(:data => @uso.dt_fim) %>
 				    	<span class="add-on"><i class="icon-th"></i></span>
 				    </div>
-			    </div>
-			    <div class="field">
-			    	<%= f.label :Quantidade_de_animais %>
-			    	<%= f.text_field :qnt_animais, class: "form-control"%>
-			    </div>
-			    <div class="field">
-			    	<%= f.label :Idade_média %>(em meses)
-			    	<%= f.text_field :idade_animais, class: "form-control"%>
-			    </div>
-				</br></br>
-				<div class="actions">
-				    <%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
-				    <%= link_to 'Voltar', @area , class:"btn btn-default btn-md"%> 
 				</div>
 			</div>
         </div>
+        <div class="col-md-8">
+         	</br></br>
+        	<table class="table table-hover">
+        		<thead>
+	        		<tr>
+	        			<th></th>
+	        			<th>
+	        				Macho
+	        			</th>
+	        			<th>
+	        				Fêmea
+	        			</th>
+	        		</tr>
+        		</thead>
+				<tr>
+					<td class="align-middle">
+						0 a 12 meses
+					</td>
+					<td>
+		        		<%= f.text_field :qnt_macho_faixa_um, class: "form-control"%>
+					</td>
+					<td>
+		        		<%= f.text_field :qnt_femea_faixa_um, class: "form-control"%>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						13 a 36 meses
+					</td>
+					<td>
+		        		<%= f.text_field :qnt_macho_faixa_dois, class: "form-control"%>
+					</td>
+	        		<td>
+		        		<%= f.text_field :qnt_femea_faixa_dois, class: "form-control"%>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						mais de 37 meses
+					</td>
+					<td>
+		        		<%= f.text_field :qnt_macho_faixa_tres, class: "form-control"%>
+					</td>
+	        		<td>
+		        		<%= f.text_field :qnt_femea_faixa_tres, class: "form-control"%>
+					</td>
+				</tr>
+			</table>
+		    </br></br>
+			<div class="actions">
+			    <%= f.submit ( f.object.new_record? ? "Criar" : "Atualizar"), class:"btn btn-success btn-md"%>
+			    <%= link_to 'Voltar', @area , class:"btn btn-default btn-md"%> 
+			</div>
+		</div>	
     </div>
 </div> 
 <script type="text/javascript">
@@ -66,12 +111,25 @@
         	todayHighlight: true
         });
         
-        $('#uso_qnt_animais').keyup(function(e) {
+        $('#uso_qnt_macho_faixa_um').keyup(function(e) {
 		  this.value = this.value.replace(/[^\d\.\-]/g,'');
 		});
-		$('#uso_idade_animais').keyup(function(e) {
+		$('#uso_qnt_macho_faixa_dois').keyup(function(e) {
 		  this.value = this.value.replace(/[^\d\.\-]/g,'');
 		});
+		$('#uso_qnt_macho_faixa_tres').keyup(function(e) {
+		  this.value = this.value.replace(/[^\d\.\-]/g,'');
+		});
+		$('#uso_qnt_femea_faixa_um').keyup(function(e) {
+		  this.value = this.value.replace(/[^\d\.\-]/g,'');
+		});
+		$('#uso_qnt_femea_faixa_dois').keyup(function(e) {
+		  this.value = this.value.replace(/[^\d\.\-]/g,'');
+		});
+		$('#uso_qnt_femea_faixa_tres').keyup(function(e) {
+		  this.value = this.value.replace(/[^\d\.\-]/g,'');
+		});
+		
     });
     
     

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20201226200648) do
+ActiveRecord::Schema.define(version: 20210605190141) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,11 +81,15 @@ ActiveRecord::Schema.define(version: 20201226200648) do
   create_table "usos", force: :cascade do |t|
     t.date "dt_inicio"
     t.date "dt_fim"
-    t.integer "qnt_animais"
-    t.string "idade_animais"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "area_id"
+    t.integer "qnt_macho_faixa_um"
+    t.integer "qnt_macho_faixa_dois"
+    t.integer "qnt_macho_faixa_tres"
+    t.integer "qnt_femea_faixa_um"
+    t.integer "qnt_femea_faixa_dois"
+    t.integer "qnt_femea_faixa_tres"
     t.index ["area_id"], name: "index_usos_on_area_id"
   end
 

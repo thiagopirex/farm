@@ -28,7 +28,7 @@ class Propriedade < ApplicationRecord
     self.areas.each do |a|
       a.usos.each do |u|
         if u.dt_fim.nil?
-          qnt= qnt + u.qnt_animais;    
+          qnt= qnt + u.total_animais;    
         end
       end
     end

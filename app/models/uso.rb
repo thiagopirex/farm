@@ -2,10 +2,12 @@ class Uso < ActiveRecord::Base
   belongs_to :area
   
   validates_presence_of :dt_inicio, :message => "A data de início é obrigatória!"
-  validates_presence_of :qnt_animais, :message => "A quantidade de animais é obrigatória!"
-  validates_presence_of :idade_animais, :message => "A idade média é obrigatória!"
   
   validate :validate_data
+  
+  def total_animais
+    return self.qnt_macho_faixa_um.to_i + self.qnt_macho_faixa_dois.to_i + self.qnt_macho_faixa_tres.to_i + self.qnt_femea_faixa_um.to_i + self.qnt_femea_faixa_dois.to_i + self.qnt_femea_faixa_tres.to_i
+  end
   
   private 
   def validate_data
@@ -15,5 +17,7 @@ class Uso < ActiveRecord::Base
       end
     end
   end
+  
+  
 end
 
