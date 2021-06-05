@@ -19,7 +19,9 @@
 				<div class="field">
 					<div class="input-append date" id="data" data-date-format="dd/mm/yyyy">
 				    	<%= f.label :Data %>
-				    	<%= f.text_field :dt_acao, class: "form-control", size:"16" ,value: formatDate(:data => @acao.dt_acao) %>
+				    	<div class="input-group date">
+				    		<%= f.text_field :dt_acao, class: "form-control", size:"16" ,value: formatDate(:data => @acao.dt_acao) %><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+				    	</div>
 				    	<span class="add-on"><i class="icon-th"></i></span>
 				    </div>
 				</div>
