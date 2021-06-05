@@ -31,7 +31,7 @@ default: &default
 
 development:
   <<: *default
-  #database: farm_dev
+  database: farm_dev
   
 
   # The specified database role being used to connect to postgres.
@@ -87,4 +87,4 @@ development:
 #
 production:
   <<: *default
-  #database: farm_prod
+  database: farm_prod
