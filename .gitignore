@@ -1,3 +1,7 @@
 tmp
 log
 .vscode
+scripts
+vendor/cache
+README_TODO.md
+storage/development.sqlite3*

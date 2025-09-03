@@ -1,14 +1,8 @@
 class ApplicationController < ActionController::Base
+  include Authentication
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
-  before_action :require_login
+  protect_from_forgery with: :exception
 
-  def require_login
-    #if !logged_in?
-    #    redirect_to login_path, notice: 'Autenticação obrigatória'
-    #    return false
-    #end
-    return true
-  end
 end
