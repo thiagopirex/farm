@@ -1,7 +1,9 @@
-tmp
-log
+/tmp
+/log
 .vscode
-scripts
-vendor/cache
-README_TODO.md
-storage/development.sqlite3*
+/scripts
+/vendor/cache
+/README_TODO.md
+/storage/development.sqlite3*
+
+/config/master.key
