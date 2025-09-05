@@ -1,0 +1,74 @@
+<div class="container">
+    <div class="row">
+        <div class="row" style="margin-top: 20px">
+			<br/>
+            <div class="col-md-8" id="map" data-controller="map" style="width: 75%"></div>
+            <div class="col-md-4 open" id="sidebar" style="width:24%; margin-left: 10px">
+				
+				<div class="field">
+					<strong style="margin-left: 10px;">Propriedade:</strong>
+  					<%= @propriedade.nome %> (<span id="areaTotal" title="Calculado a partir das áreas informadas!"></span>)
+		  			<br/><br/>
+		  			<strong style="margin-left: 10px;">NIRF:</strong> <%=@propriedade.nirf %>
+		  			<br/><br/>
+		  			<strong style="margin-left: 10px;">Total de Animais: </strong><%=@propriedade.getQntAnimais %>
+		  			<br/><br/><br/>
+		  			<% if @propriedade.areas.count == 0 %>
+		  				<br/>
+		  				<strong style="margin-left: 10px;">Nenhuma área informada ainda!</strong>
+		  			<% end %>
+		  			<br/><br/><br/><br/><br/>
+
+					<div class="d-flex gap-2">
+						<%= link_to "Editar", edit_propriedade_path(@propriedade), class: "btn btn-primary" %>
+						<%= link_to "Excluir", @propriedade, data: { turbo_method: :delete, turbo_confirm: 'Tem certeza que deseja excluir os dados desta propriedade?' }, class: "btn btn-danger" %>
+						<%= link_to "Voltar", propriedades_path, class: "btn btn-secondary" %>
+						</div>
+
+					<br/><br/><br/><br/><br/>
+
+		  			<br/>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Área</span>').html_safe, new_area_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Ponto de Água</span>').html_safe, new_agua_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
+		  			<%= link_to ('<span class="glyphicon glyphicon-plus"> Curso de Água</span>').html_safe, new_malha_agua_path(:propriedade_id => @propriedade.id) , 
+		  				class:"btn btn-success btn-md botao" %>
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+
+<%= javascript_tag type:"module" do %>
+	document.addEventListener("turbo:load", () => {
+		const mapElement = document.querySelector("[data-controller='map']");
+
+		const controller = Stimulus.getControllerForElementAndIdentifier(mapElement, "map");
+
+		if (!controller || !controller.layersControl) return
+
+		controller.addCollapseControl()
+
+		const map = controller.getMap()
+
+		controller.addLayerSede('<%= @sede_ponto %>');
+
+		var layerMalhaAgua = L.layerGroup();
+		// adicionar overlay ao controle existente
+		controller.layersControl.addOverlay(layerMalhaAgua, "Malha de Água")
+		<% @propriedade.malhaAguas.each do |m| %>
+			controller.addMalhaAgua(layerMalhaAgua, <%= m.id %>, '<%= m.getGeoJsonFromRGeoLine %>');
+		<% end %>
+
+		var layerArea = L.layerGroup();
+		// adicionar overlay ao controle existente
+		controller.layersControl.addOverlay(layerArea, "Pontos de Água")
+		var areaTotal = 0;
+		<% @propriedade.areas.each do |a| %>
+			areaTotal = areaTotal + controller.addArea(layerArea, <%= a.id %>, '<%= a.getGeoJsonFromRGeo %>');
+		<% end %>
+		document.getElementById('areaTotal').innerHTML = 'Área útil: ' + areaTotal.toFixed(2) + ' hectares';
+	});
+
+<% end %>

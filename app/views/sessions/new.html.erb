@@ -1,9 +1,30 @@
-<%= tag.div(flash[:alert], style: "color:red") if flash[:alert] %>
-<%= tag.div(flash[:notice], style: "color:green") if flash[:notice] %>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
 
-<%= form_with url: session_path do |form| %>
-  <%= form.text_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your login", value: params[:email_address] %><br>
-  <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72 %><br>
-  <%= form.submit "Sign in" %>
-<% end %>
-<br>
+      
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">Login</h3>
+        </div>
+        <div class="card-body">
+          <%= form_with(url: session_path, local: true) do |form| %>
+            <div class="mb-3">
+              <%= form.label :email_address, class: "form-label" %>
+              <%= form.text_field :email_address, class: "form-control", autofocus: true, autocomplete: "username", 
+                  placeholder: "Enter your email", required: true, value: params[:email_address] %>
+            </div>
+            <div class="mb-3">
+              <%= form.label :password, class: "form-label" %>
+              <%= form.password_field :password, class: "form-control",autocomplete: "current-password",
+                  placeholder: "Enter your password", required: true %>
+            </div>
+            <div class="d-grid gap-2">
+              <%= form.submit "Log In", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

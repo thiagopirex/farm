@@ -1,0 +1,28 @@
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          
+          <li class="nav-item active">
+            <%= link_to "Página Inicial", root_path, class: "nav-link navbar-brand" %>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle navbar-brand" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              Propriedades
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <% @propriedades.each do |p| %>
+                <%= link_to p.nome, p, class: "dropdown-item"%>
+              <% end %>
+              <div class="dropdown-divider"></div>
+              <%= link_to 'Nova Propriedade', new_propriedade_path,  class: "dropdown-item"%>
+            </div>
+          </li>
+          <li><%= link_to 'Sair', session_path, data: { turbo_method: :delete}, class: "nav-link navbar-brand" %></li>
+        
+        </ul>
+      </div>
+    </div>
+  </nav>

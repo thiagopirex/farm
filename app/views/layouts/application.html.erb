@@ -15,14 +15,45 @@
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
+    <link rel="apple-touch-icon" href="/icon.png"> 
+  
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css", rel: "stylesheet" %>
+    <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/leaflet-measure@3.1.0/dist/leaflet-measure.css", rel: "stylesheet" %>
+
     <%= javascript_importmap_tags %>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+
   </head>
 
   <body>
-    <%= yield %>
+    <% if authenticated? %>
+      <%= render 'home/navigation' %>
+    <% end %>
+    <div class='container'>
+      <% if flash[:notice] %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <%= flash[:notice] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+
+      <% if flash[:alert] %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <%= flash[:alert] %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+      
+      <%= yield %>
+    </div>
+    <div class='container'>
+      <%= render 'home/footer' %>
+    </div>
+    
+    
   </body>
 </html>

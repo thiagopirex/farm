@@ -1,7 +1,10 @@
-Hello!
+<% if @propriedades.count == 0 %>
 
-<% if authenticated? %>
-  <%= button_to "Sign Out", session_path, method: :delete  %>
+<div class="alert alert-info" role="alert">
+	<strong><%= t('Alerta') =%></strong>: Não há propriedades cadastradas!
+</div>
+<%= link_to 'Clique aqui', new_propriedade_path %> para começar!
 <% else %>
-  <%= link_to "Sign In", new_session_path %>
-<% end %>
+Total de propriedades registradas: <a title="Ver todas" href='/propriedades/'><%= @propriedades.count%></a>
+</br>
+<% end%>

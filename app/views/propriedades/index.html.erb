@@ -1,0 +1,29 @@
+<h2>Todas as Propriedades
+  <%= link_to 'Nova Propriedade', new_propriedade_path,  class: "btn btn-outline-success"%>
+</h2>
+
+<table class="table">
+  <thead class="thead-inverse">
+    <tr>
+      <th>NIRF</th>
+      <th>Nome</th>
+      <th># Áreas</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @propriedades.each do |propriedade| %>
+      <tr>
+      	<td><%= propriedade.nirf %></td>
+        <td><%= propriedade.nome %></td>
+        <td><%= link_to propriedade.areas.count, areas_path(:propriedade_id => propriedade.id) %></td>
+        <td><%= link_to 'Detalhar', propriedade, class:"btn btn-info" %></td>
+        <td><%= link_to 'Editar', edit_propriedade_path(propriedade), class:"btn btn-primary" %></td>
+        <td><%= link_to 'Excluir', propriedade, method: :delete, data: { confirm: 'Tem certeza que deseja excluir esta propriedade?' }, class:"btn btn-danger" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<br>
+
